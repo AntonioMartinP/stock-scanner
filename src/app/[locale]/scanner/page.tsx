@@ -19,13 +19,31 @@ export default function ScannerPage() {
   const [selected, setSelected] = useState<ScannerRow | null>(null);
   const [source, setSource] = useState("stooq");
   const [mode, setMode] = useState("ath_real");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(
-      `/api/scanner?market=ibex35&source=${source}&mode=${mode}`
-    )
-      .then(res => res.json())
-      .then(res => setData(res.data ?? []));
+    setErrorMsg(null);
+
+    fetch(`/api/scanner?market=ibex35&source=${source}&mode=${mode}`)
+      .then(async res => {
+        const payload = await res.json();
+
+        if (!res.ok) {
+          setData([]);
+          setSelected(null);
+
+          if (res.status === 429) {
+            setErrorMsg(payload?.error ?? "Rate limit reached for selected provider.");
+            return;
+          }
+
+          setErrorMsg(payload?.error ?? "Unexpected error.");
+          return;
+        }
+
+        setData(payload.data ?? []);
+      })
+      .catch(() => setErrorMsg("Network error."));
   }, [source, mode]);
 
   return (
@@ -42,6 +60,12 @@ export default function ScannerPage() {
             <option value="ath_52w">ATH 52 semanas</option>
           </select>
         </div>
+
+        {errorMsg && (
+          <div className="mb-3 rounded border p-3 text-sm">
+            {errorMsg}
+          </div>
+        )}
 
         <table className="w-full border-collapse border">
           <thead>
