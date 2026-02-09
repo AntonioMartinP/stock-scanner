@@ -35,6 +35,10 @@
       "ath": "ATH",
       "near": "Near",
       "away": "Away"
+    },
+    "empty": {
+      "noResults": "No results",
+      "selectRow": "Select a row to see details."
     }
   }
 }

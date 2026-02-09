@@ -35,6 +35,10 @@
       "ath": "ATH",
       "near": "Cerca",
       "away": "Lejos"
+    },
+    "empty": {
+      "noResults": "Sin resultados",
+      "selectRow": "Selecciona un valor para ver detalles."
     }
   }
 }
