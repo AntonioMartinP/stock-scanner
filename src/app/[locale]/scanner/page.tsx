@@ -21,7 +21,14 @@ export default function ScannerPage() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | "ath" | "near">("all");
 
-  const markets = useMemo(() => [{ id: "ibex35", label: "IBEX 35" }], []);
+  const [markets, setMarkets] = useState<Array<{id: string; label: string}>>([{id: "ibex35", label: "IBEX 35"}]);
+
+  useEffect(() => {
+    fetch("/api/markets")
+      .then(r => r.json())
+      .then(p => setMarkets((p.data ?? []).map((m: any) => ({ id: m.id, label: m.name }))))
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     setErrorMsg(null);
