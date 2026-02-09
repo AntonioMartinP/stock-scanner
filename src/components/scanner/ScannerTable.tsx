@@ -139,7 +139,7 @@ export default function ScannerTable({
             {sorted.length === 0 && (
               <tr>
                 <Td colSpan={6} className="py-8 text-center text-gray-500">
-                  No results
+                  {t("empty.noResults")}
                 </Td>
               </tr>
             )}

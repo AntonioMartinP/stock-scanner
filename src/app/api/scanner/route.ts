@@ -1,46 +1,48 @@
 import { runScanner } from "@/application/usecases/runScanner";
 import { ProviderRateLimitError } from "@/infrastructure/marketData/errors";
+import { scannerQuerySchema } from "@/lib/validation";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
 
-  const market = searchParams.get("market");
-  const source = searchParams.get("source");
-  const mode = searchParams.get("mode");
+  const parsed = scannerQuerySchema.safeParse({
+    market: searchParams.get("market"),
+    source: searchParams.get("source"),
+    mode: searchParams.get("mode")
+  });
 
-  if (!market || !source || !mode) {
+  if (!parsed.success) {
     return Response.json(
-      { error: "Missing required query params" },
+      {
+        error: "Invalid query parameters",
+        details: parsed.error.flatten()
+      },
       { status: 400 }
     );
   }
 
   try {
-    console.log(`[API] Starting scanner - market: ${market}, source: ${source}, mode: ${mode}`);
-    
     const data = await runScanner({
-      marketId: market as any,
-      source: source as any,
-      mode: mode as any
+      marketId: parsed.data.market as any,
+      source: parsed.data.source as any,
+      mode: parsed.data.mode as any
     });
 
-    console.log(`[API] Scanner completed - ${data.length} results`);
     return Response.json({ data });
-  } catch (error: any) {
-    console.error("Scanner API Error:", error);
-
+  } catch (error) {
     if (error instanceof ProviderRateLimitError) {
       return Response.json(
         {
           error: error.message,
-          provider: error.providerId
+          provider: error.providerId,
+          type: "RATE_LIMIT"
         },
         { status: 429 }
       );
     }
 
     return Response.json(
-      { error: error.message || "Internal server error" },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

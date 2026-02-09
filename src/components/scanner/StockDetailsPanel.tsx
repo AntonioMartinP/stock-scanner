@@ -13,7 +13,7 @@ export default function StockDetailsPanel({
   if (!row) {
     return (
       <div className="h-full p-4 text-sm text-gray-600">
-        Select a row to see details.
+        {t("empty.selectRow")}
       </div>
     );
   }
