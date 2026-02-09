@@ -4,6 +4,7 @@ export type AthMode = "ath_real" | "ath_52w";
 
 export type AthResult = {
   ath: number;
+  previousAth: number;
   currentHigh: number;
   distancePct: number;
   isNewAth: boolean;
@@ -19,6 +20,7 @@ export function computeAth(
   if (!candles || candles.length < 2) {
     return {
       ath: 0,
+      previousAth: 0,
       currentHigh: 0,
       distancePct: 0,
       isNewAth: false,
@@ -39,13 +41,15 @@ export function computeAth(
   const lastCandle = relevantCandles[relevantCandles.length - 1];
 
   const ath = Math.max(...previousCandles.map(c => c.high));
+  const previousAth = ath;
   const currentHigh = lastCandle.high;
 
-  const isNewAth = currentHigh > ath;
-  const distancePct = ((ath - currentHigh) / ath) * 100;
+  const isNewAth = currentHigh > previousAth;
+  const distancePct = ((previousAth - currentHigh) / previousAth) * 100;
 
   return {
-    ath,
+    ath: isNewAth ? currentHigh : previousAth,
+    previousAth,
     currentHigh,
     distancePct,
     isNewAth,
