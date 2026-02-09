@@ -1,0 +1,19 @@
+graph TD
+  U[User] --> UI[Next.js Dashboard<br/>i18n: ES/EN]
+  UI --> API[/api/scanner/]
+  API --> UC[runScanner use case]
+  UC --> P{Provider Factory}
+  P -->|Yahoo Finance| YF[Yahoo Finance API<br/>yahoo-finance2]
+  P -->|Stooq| S[Stooq API CSV<br/>Mock fallback]
+  P -->|Alpha Vantage| AV[Alpha Vantage API JSON<br/>Rate limited]
+  UC --> Cache[Memory Cache<br/>6h TTL]
+  Cache --> ATH[computeAth<br/>uses HIGH field<br/>modes: ath_real / ath_52w]
+  ATH --> Results[Scanner Results]
+  Results --> UI
+  UI --> TV[TradingView Widget<br/>Real-time charts]
+  
+  style YF fill:#90EE90
+  style S fill:#FFB6C1
+  style AV fill:#FFD700
+  style ATH fill:#87CEEB
+  style Cache fill:#DDA0DD
