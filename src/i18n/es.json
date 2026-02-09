@@ -2,5 +2,39 @@
   "home": {
     "title": "Scanner ATH",
     "subtitle": "Dashboard de máximos históricos"
+  },
+  "scanner": {
+    "title": "Scanner",
+    "controls": {
+      "market": "Mercado",
+      "source": "Fuente",
+      "mode": "Modo",
+      "search": "Buscar",
+      "onlyAth": "Solo ATH",
+      "onlyNear": "Solo cerca",
+      "showAll": "Todos"
+    },
+    "modes": {
+      "ath_real": "ATH real",
+      "ath_52w": "ATH 52 semanas"
+    },
+    "sources": {
+      "stooq": "Stooq",
+      "alphavantage": "Alpha Vantage",
+      "yahoo": "Yahoo Finance"
+    },
+    "table": {
+      "ticker": "Ticker",
+      "name": "Nombre",
+      "status": "Estado",
+      "currentHigh": "Máximo hoy",
+      "ath": "ATH",
+      "distance": "Distancia"
+    },
+    "status": {
+      "ath": "ATH",
+      "near": "Cerca",
+      "away": "Lejos"
+    }
   }
 }

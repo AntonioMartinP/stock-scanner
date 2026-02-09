@@ -2,5 +2,39 @@
   "home": {
     "title": "ATH Scanner",
     "subtitle": "All-time highs dashboard"
+  },
+  "scanner": {
+    "title": "Scanner",
+    "controls": {
+      "market": "Market",
+      "source": "Source",
+      "mode": "Mode",
+      "search": "Search",
+      "onlyAth": "Only ATH",
+      "onlyNear": "Only Near",
+      "showAll": "Show all"
+    },
+    "modes": {
+      "ath_real": "All-time high",
+      "ath_52w": "52-week high"
+    },
+    "sources": {
+      "stooq": "Stooq",
+      "alphavantage": "Alpha Vantage",
+      "yahoo": "Yahoo Finance"
+    },
+    "table": {
+      "ticker": "Ticker",
+      "name": "Name",
+      "status": "Status",
+      "currentHigh": "Today's high",
+      "ath": "ATH",
+      "distance": "Distance"
+    },
+    "status": {
+      "ath": "ATH",
+      "near": "Near",
+      "away": "Away"
+    }
   }
 }
