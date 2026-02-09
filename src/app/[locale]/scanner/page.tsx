@@ -17,12 +17,14 @@ type ScannerRow = {
 export default function ScannerPage() {
   const [data, setData] = useState<ScannerRow[]>([]);
   const [selected, setSelected] = useState<ScannerRow | null>(null);
-  const [source, setSource] = useState("stooq");
-  const [mode, setMode] = useState("ath_real");
+  const [source, setSource] = useState("yahoo");
+  const [mode, setMode] = useState("ath_52w");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setErrorMsg(null);
+    setLoading(true);
 
     fetch(`/api/scanner?market=ibex35&source=${source}&mode=${mode}`)
       .then(async res => {
@@ -38,41 +40,60 @@ export default function ScannerPage() {
           }
 
           setErrorMsg(payload?.error ?? "Unexpected error.");
+          console.error("API Error:", payload);
           return;
         }
 
+        console.log("Scanner response:", payload);
         setData(payload.data ?? []);
       })
-      .catch(() => setErrorMsg("Network error."));
+      .catch((err) => {
+        console.error("Network error:", err);
+        setErrorMsg("Network error.");
+      })
+      .finally(() => setLoading(false));
   }, [source, mode]);
 
   return (
     <div className="flex h-screen">
-      <div className="w-1/2 p-4">
+      <div className="w-1/2 p-4 overflow-auto">
         <div className="flex gap-4 mb-4">
-          <select value={source} onChange={e => setSource(e.target.value)} className="p-2 border rounded">
+          <select value={source} onChange={e => setSource(e.target.value)} className="border p-2 rounded">
+            <option value="yahoo">Yahoo Finance</option>
             <option value="stooq">Stooq</option>
             <option value="alphavantage">Alpha Vantage</option>
           </select>
 
-          <select value={mode} onChange={e => setMode(e.target.value)} className="p-2 border rounded">
+          <select value={mode} onChange={e => setMode(e.target.value)} className="border p-2 rounded">
             <option value="ath_real">ATH real</option>
             <option value="ath_52w">ATH 52 semanas</option>
           </select>
         </div>
 
+        {loading && (
+          <div className="mb-3 rounded border p-3 text-sm bg-blue-50">
+            Cargando datos...
+          </div>
+        )}
+
         {errorMsg && (
-          <div className="mb-3 rounded border p-3 text-sm">
+          <div className="mb-3 rounded border p-3 text-sm bg-red-50 text-red-800">
             {errorMsg}
           </div>
         )}
 
-        <table className="w-full border-collapse border">
+        {!loading && !errorMsg && data.length === 0 && (
+          <div className="mb-3 rounded border p-3 text-sm bg-yellow-50">
+            No hay datos disponibles
+          </div>
+        )}
+
+        <table className="w-full border">
           <thead>
-            <tr className="bg-gray-50 text-left">
-              <th className="p-2 border">Ticker</th>
-              <th className="p-2 border">Nombre</th>
-              <th className="p-2 border">Estado</th>
+            <tr className="bg-gray-100">
+              <th className="border p-2 text-left">Ticker</th>
+              <th className="border p-2 text-left">Nombre</th>
+              <th className="border p-2 text-left">Estado</th>
             </tr>
           </thead>
           <tbody>
@@ -82,9 +103,9 @@ export default function ScannerPage() {
                 onClick={() => setSelected(row)}
                 className={`cursor-pointer hover:bg-gray-100 ${selected?.ticker === row.ticker ? 'bg-blue-50' : ''}`}
               >
-                <td className="p-2 border font-medium">{row.ticker}</td>
-                <td className="p-2 border">{row.name}</td>
-                <td className="p-2 border">
+                <td className="border p-2">{row.ticker}</td>
+                <td className="border p-2">{row.name}</td>
+                <td className="border p-2">
                   {row.isNewAth
                     ? "🟢 ATH"
                     : row.isNearAth
@@ -97,11 +118,11 @@ export default function ScannerPage() {
         </table>
       </div>
 
-      <div className="w-1/2 border-l">
+      <div className="w-1/2 p-4 border-l">
         {selected ? (
           <TradingViewWidget symbol={selected.tradingViewSymbol} />
         ) : (
-          <div className="flex h-full items-center justify-center text-gray-400">
+          <div className="flex items-center justify-center h-full text-gray-400">
             Selecciona una acción para ver el gráfico
           </div>
         )}

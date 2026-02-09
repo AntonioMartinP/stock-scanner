@@ -8,6 +8,6 @@ export type Candle = {
 };
 
 export type MarketDataProvider = {
-  id: "stooq" | "alphavantage";
+  id: "stooq" | "alphavantage" | "yahoo";
   getDailyHistory(input: {marketId: string; ticker: string}): Promise<Candle[]>;
 };

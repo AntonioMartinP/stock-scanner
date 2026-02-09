@@ -11,3 +11,10 @@ export const ibexToAlphaVantageSymbol: Record<string, string> = {
   IBE: "IBE.MC",
   ITX: "ITX.MC"
 };
+
+export const ibexToYahooSymbol: Record<string, string> = {
+  SAN: "SAN.MC",
+  BBVA: "BBVA.MC",
+  IBE: "IBE.MC",
+  ITX: "ITX.MC"
+};
