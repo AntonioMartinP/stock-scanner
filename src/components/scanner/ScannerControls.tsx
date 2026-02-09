@@ -10,6 +10,8 @@ export default function ScannerControls({
   setSource,
   mode,
   setMode,
+  onRefresh,
+  isRefreshing,
   t
 }: {
   markets: Array<{ id: string; label: string }>;
@@ -19,6 +21,8 @@ export default function ScannerControls({
   setSource: (v: any) => void;
   mode: "ath_real" | "ath_52w";
   setMode: (v: any) => void;
+  onRefresh: () => void;
+  isRefreshing: boolean;
   t: (key: string) => string;
 }) {
   return (
@@ -50,6 +54,19 @@ export default function ScannerControls({
           <option value="ath_52w">{t("modes.ath_52w")}</option>
         </Select>
       </label>
+
+      <button
+        onClick={onRefresh}
+        disabled={isRefreshing}
+        className={[
+          "h-9 rounded border px-4 text-sm font-medium",
+          isRefreshing 
+            ? "cursor-not-allowed bg-gray-100 text-gray-400" 
+            : "hover:bg-gray-50 active:bg-gray-100"
+        ].join(" ")}
+      >
+        {isRefreshing ? "⟳ ..." : `⟳ ${t("controls.refresh")}`}
+      </button>
     </div>
   );
 }

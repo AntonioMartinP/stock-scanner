@@ -17,6 +17,7 @@ export default function ScannerPage() {
   const [selected, setSelected] = useState<ScannerRow | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | "ath" | "near">("all");
@@ -30,9 +31,9 @@ export default function ScannerPage() {
       .catch(() => {});
   }, []);
 
-  useEffect(() => {
+  const fetchData = () => {
     setErrorMsg(null);
-    setLoading(true);
+    setIsRefreshing(true);
 
     fetch(`/api/scanner?market=${marketId}&source=${source}&mode=${mode}`)
       .then(async res => {
@@ -45,10 +46,22 @@ export default function ScannerPage() {
           return;
         }
 
-        setRows(payload.data ?? []);
+        const now = new Date();
+        const rowsWithTimestamp = (payload.data ?? []).map((row: ScannerRow) => ({
+          ...row,
+          lastUpdate: now
+        }));
+
+        setRows(rowsWithTimestamp);
       })
       .catch(() => setErrorMsg("Network error."))
-      .finally(() => setLoading(false));
+      .finally(() => setIsRefreshing(false));
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    fetchData();
+    setLoading(false);
   }, [marketId, source, mode]);
 
   return (
@@ -67,6 +80,8 @@ export default function ScannerPage() {
           setSource={setSource}
           mode={mode}
           setMode={setMode}
+          onRefresh={fetchData}
+          isRefreshing={isRefreshing}
           t={(k) => t(k as any)}
         />
 

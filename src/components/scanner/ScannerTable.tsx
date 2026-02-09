@@ -12,9 +12,10 @@ export type ScannerRow = {
   distancePct: number;
   isNewAth: boolean;
   isNearAth: boolean;
+  lastUpdate?: Date;
 };
 
-type SortKey = "ticker" | "name" | "currentHigh" | "ath" | "distancePct";
+type SortKey = "ticker" | "name" | "currentHigh" | "ath" | "distancePct" | "lastUpdate";
 
 export default function ScannerTable({
   rows,
@@ -64,6 +65,13 @@ export default function ScannerTable({
 
   const sorted = [...filtered].sort((a, b) => {
     const dir = sortDir === "asc" ? 1 : -1;
+    
+    if (sortKey === "lastUpdate") {
+      const aTime = a.lastUpdate?.getTime() ?? 0;
+      const bTime = b.lastUpdate?.getTime() ?? 0;
+      return (aTime - bTime) * dir;
+    }
+    
     const av = a[sortKey];
     const bv = b[sortKey];
     if (typeof av === "number" && typeof bv === "number") return (av - bv) * dir;
@@ -109,6 +117,7 @@ export default function ScannerTable({
               <Th onClick={() => toggleSort("currentHigh")}>{t("table.currentHigh")}</Th>
               <Th onClick={() => toggleSort("ath")}>{t("table.ath")}</Th>
               <Th onClick={() => toggleSort("distancePct")}>{t("table.distance")}</Th>
+              <Th onClick={() => toggleSort("lastUpdate")}>{t("table.lastUpdate")}</Th>
             </tr>
           </thead>
 
@@ -135,12 +144,15 @@ export default function ScannerTable({
                   <Td className="font-mono">{fmtMoney(r.currentHigh)}</Td>
                   <Td className="font-mono">{fmtMoney(r.ath)}</Td>
                   <Td className="font-mono">{fmtPct(r.distancePct)}</Td>
+                  <Td className="font-mono text-gray-600">
+                    {r.lastUpdate ? fmtDateTime(r.lastUpdate) : "-"}
+                  </Td>
                 </tr>
               );
             })}
             {sorted.length === 0 && (
               <tr>
-                <Td colSpan={6} className="py-8 text-center text-gray-500">
+                <Td colSpan={7} className="py-8 text-center text-gray-500">
                   {t("empty.noResults")}
                 </Td>
               </tr>
@@ -157,7 +169,7 @@ function Th({ children, onClick }: { children: React.ReactNode; onClick?: () => 
     <th
       onClick={onClick}
       className={[
-        "px-3 py-2 text-left font-medium",
+        "px-2 py-1 text-left font-medium",
         onClick ? "cursor-pointer select-none hover:bg-gray-50" : ""
       ].join(" ")}
     >
@@ -188,4 +200,14 @@ function fmtMoney(v: number) {
 
 function fmtPct(v: number) {
   return `${v.toFixed(2)}%`;
+}
+
+function fmtDateTime(date: Date) {
+  return new Intl.DateTimeFormat(undefined, {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  }).format(date);
 }

@@ -12,7 +12,8 @@
       "search": "Buscar",
       "onlyAth": "Solo ATH",
       "onlyNear": "Solo cerca",
-      "showAll": "Todos"
+      "showAll": "Todos",
+      "refresh": "Actualizar"
     },
     "modes": {
       "ath_real": "ATH real",
@@ -29,7 +30,8 @@
       "status": "Estado",
       "currentHigh": "Máximo hoy",
       "ath": "ATH",
-      "distance": "Distancia"
+      "distance": "Distancia",
+      "lastUpdate": "Última actualización"
     },
     "status": {
       "ath": "ATH",

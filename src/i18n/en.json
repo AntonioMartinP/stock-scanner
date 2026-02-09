@@ -12,7 +12,8 @@
       "search": "Search",
       "onlyAth": "Only ATH",
       "onlyNear": "Only Near",
-      "showAll": "Show all"
+      "showAll": "Show all",
+      "refresh": "Refresh"
     },
     "modes": {
       "ath_real": "All-time high",
@@ -29,7 +30,8 @@
       "status": "Status",
       "currentHigh": "Today's high",
       "ath": "ATH",
-      "distance": "Distance"
+      "distance": "Distance",
+      "lastUpdate": "Last update"
     },
     "status": {
       "ath": "ATH",
