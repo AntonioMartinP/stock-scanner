@@ -100,7 +100,7 @@ export default function ScannerTable({
       </div>
 
       <div className="overflow-auto rounded border">
-        <table className="w-full text-sm">
+        <table className="w-full text-xs">
           <thead className="sticky top-0 bg-white">
             <tr className="border-b">
               <Th onClick={() => toggleSort("ticker")}>{t("table.ticker")}</Th>
@@ -121,8 +121,10 @@ export default function ScannerTable({
                   key={r.ticker}
                   onClick={() => onSelect(r)}
                   className={[
-                    "cursor-pointer border-b hover:bg-gray-50",
-                    isSelected ? "bg-gray-100" : ""
+                    "cursor-pointer border-b",
+                    r.isNewAth ? "bg-green-50" : r.isNearAth ? "bg-yellow-50" : "",
+                    isSelected ? "ring-1 ring-black/20" : "",
+                    "hover:bg-gray-100"
                   ].join(" ")}
                 >
                   <Td className="font-mono">{r.ticker}</Td>
@@ -130,9 +132,9 @@ export default function ScannerTable({
                   <Td>
                     <Badge>{t(statusKey)}</Badge>
                   </Td>
-                  <Td>{fmtMoney(r.currentHigh)}</Td>
-                  <Td>{fmtMoney(r.ath)}</Td>
-                  <Td>{fmtPct(r.distancePct)}</Td>
+                  <Td className="font-mono">{fmtMoney(r.currentHigh)}</Td>
+                  <Td className="font-mono">{fmtMoney(r.ath)}</Td>
+                  <Td className="font-mono">{fmtPct(r.distancePct)}</Td>
                 </tr>
               );
             })}
@@ -174,7 +176,7 @@ function Td({
   colSpan?: number;
 }) {
   return (
-    <td colSpan={colSpan} className={["px-3 py-2", className ?? ""].join(" ")}>
+    <td colSpan={colSpan} className={["px-2 py-1", className ?? ""].join(" ")}>
       {children}
     </td>
   );
