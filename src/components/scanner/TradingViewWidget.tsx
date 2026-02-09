@@ -42,7 +42,7 @@ export default function TradingViewWidget({ symbol }: { symbol: string }) {
         interval: 'D',
         timezone: 'Europe/Madrid',
         theme: 'light',
-        style: '1',
+        style: '0',
         locale: 'es',
         toolbar_bg: '#f1f3f6',
         enable_publishing: false,
