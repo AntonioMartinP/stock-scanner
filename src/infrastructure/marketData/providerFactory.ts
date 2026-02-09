@@ -1,11 +1,11 @@
 import type { MarketDataProvider } from "./MarketDataProvider";
-import { stooqProvider } from "./stooqProvider";
+import { mockProvider } from "./mockProvider";
 import { alphaVantageProvider } from "./alphaVantageProvider";
 
 export type DataSource = "stooq" | "alphavantage";
 
 const providers: Record<DataSource, MarketDataProvider> = {
-  stooq: stooqProvider,
+  stooq: mockProvider, // Using mock provider since Stooq doesn't have Spanish stock data
   alphavantage: alphaVantageProvider
 };
 

@@ -38,11 +38,26 @@ export const stooqProvider: MarketDataProvider = {
     if (cached) return cached;
 
     const url = `https://stooq.com/q/d/l/?s=${encodeURIComponent(symbol)}&i=d`;
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) throw new Error(`Stooq request failed: ${res.status}`);
+    console.log(`[Stooq] Fetching ${symbol} from ${url}`);
+    
+    const res = await fetch(url, { 
+      cache: "no-store",
+      headers: {
+        'Accept': 'text/csv,application/csv,*/*',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      }
+    });
+    
+    if (!res.ok) {
+      console.error(`[Stooq] Request failed for ${symbol}: ${res.status}`);
+      throw new Error(`Stooq request failed: ${res.status}`);
+    }
 
     const csv = await res.text();
+    console.log(`[Stooq] Response for ${symbol}:`, csv.substring(0, 200));
+    
     const candles = parseStooqCsv(csv);
+    console.log(`[Stooq] Parsed ${candles.length} candles for ${symbol}`);
 
     marketDataCache.set(cacheKey, candles);
     return candles;

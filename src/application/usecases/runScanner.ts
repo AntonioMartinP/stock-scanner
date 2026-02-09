@@ -18,21 +18,31 @@ export async function runScanner(input: {
 
   const results = await Promise.all(
     market.stocks.map(async stock => {
-      const candles = await provider.getDailyHistory({
-        marketId,
-        ticker: stock.ticker
-      });
+      try {
+        const candles = await provider.getDailyHistory({
+          marketId,
+          ticker: stock.ticker
+        });
 
-      const athResult = computeAth(candles, mode);
+        if (!candles || candles.length === 0) {
+          console.warn(`No candle data for ${stock.ticker}`);
+          return null;
+        }
 
-      return {
-        ticker: stock.ticker,
-        name: stock.name,
-        tradingViewSymbol: stock.tradingViewSymbol,
-        ...athResult
-      };
+        const athResult = computeAth(candles, mode);
+
+        return {
+          ticker: stock.ticker,
+          name: stock.name,
+          tradingViewSymbol: stock.tradingViewSymbol,
+          ...athResult
+        };
+      } catch (error) {
+        console.error(`Error scanning ${stock.ticker}:`, error);
+        return null;
+      }
     })
   );
 
-  return results;
+  return results.filter((r): r is NonNullable<typeof r> => r !== null);
 }

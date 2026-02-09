@@ -1,8 +1,8 @@
 export const ibexToStooqSymbol: Record<string, string> = {
-  SAN: "san.es",
-  BBVA: "bbva.es",
-  IBE: "ibe.es",
-  ITX: "itx.es"
+  SAN: "SAN.ES",
+  BBVA: "BBVA.ES",
+  IBE: "IBE.ES",
+  ITX: "ITX.ES"
 };
 
 export const ibexToAlphaVantageSymbol: Record<string, string> = {

@@ -1,7 +1,7 @@
-import {useTranslations} from "next-intl";
+import {getTranslations} from "next-intl/server";
 
-export default function Home() {
-  const t = useTranslations("home");
+export default async function Home() {
+  const t = await getTranslations("home");
   return (
     <main style={{padding: 24}}>
       <h1>{t("title")}</h1>

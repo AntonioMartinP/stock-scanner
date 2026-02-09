@@ -16,14 +16,19 @@ export async function GET(req: Request) {
   }
 
   try {
+    console.log(`[API] Starting scanner - market: ${market}, source: ${source}, mode: ${mode}`);
+    
     const data = await runScanner({
       marketId: market as any,
       source: source as any,
       mode: mode as any
     });
 
+    console.log(`[API] Scanner completed - ${data.length} results`);
     return Response.json({ data });
-  } catch (error) {
+  } catch (error: any) {
+    console.error("Scanner API Error:", error);
+
     if (error instanceof ProviderRateLimitError) {
       return Response.json(
         {
@@ -35,7 +40,7 @@ export async function GET(req: Request) {
     }
 
     return Response.json(
-      { error: "Internal server error" },
+      { error: error.message || "Internal server error" },
       { status: 500 }
     );
   }

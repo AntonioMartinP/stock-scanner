@@ -16,8 +16,14 @@ export function computeAth(
   candles: Candle[],
   mode: AthMode
 ): AthResult {
-  if (candles.length === 0) {
-    throw new Error("No candle data available");
+  if (!candles || candles.length < 2) {
+    return {
+      ath: 0,
+      currentHigh: 0,
+      distancePct: 0,
+      isNewAth: false,
+      isNearAth: false
+    };
   }
 
   const sorted = [...candles].sort(
