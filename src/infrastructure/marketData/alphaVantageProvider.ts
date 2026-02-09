@@ -1,13 +1,38 @@
-import type { MarketDataProvider, Candle } from "./MarketDataProvider";
+import type { Candle, MarketDataProvider } from "./MarketDataProvider";
 import { ProviderRateLimitError } from "./errors";
+import { marketDataCache } from "@/infrastructure/cache/memoryCache";
+import { ibexToAlphaVantageSymbol } from "./mappings/ibexMappings";
+
+function mustGetEnv(name: string): string {
+  const v = process.env[name];
+  if (!v) throw new Error(`Missing env var: ${name}`);
+  return v;
+}
 
 export const alphaVantageProvider: MarketDataProvider = {
   id: "alphavantage",
 
   async getDailyHistory({ marketId, ticker }): Promise<Candle[]> {
-    // const response = await fetch(/* Alpha Vantage URL built with mapping */);
-    // const data = await response.json();
-    const data: any = {}; // Placeholder
+    if (marketId !== "ibex35") {
+      throw new Error(`Alpha Vantage provider: unsupported marketId ${marketId}`);
+    }
+
+    const symbol = ibexToAlphaVantageSymbol[ticker];
+    if (!symbol) throw new Error(`Alpha Vantage mapping not found for ticker: ${ticker}`);
+
+    const cacheKey = marketDataCache.makeKey(["history", "alphavantage", marketId, ticker, symbol]);
+    const cached = marketDataCache.get<Candle[]>(cacheKey);
+    if (cached) return cached;
+
+    const apiKey = mustGetEnv("ALPHAVANTAGE_API_KEY");
+
+    const url =
+      `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED` +
+      `&symbol=${encodeURIComponent(symbol)}` +
+      `&outputsize=full&apikey=${encodeURIComponent(apiKey)}`;
+
+    const res = await fetch(url, { cache: "no-store" });
+    const data = await res.json();
 
     if (data?.Note || data?.Information) {
       throw new ProviderRateLimitError(
@@ -16,7 +41,23 @@ export const alphaVantageProvider: MarketDataProvider = {
       );
     }
 
-    // map Alpha Vantage payload to Candle[]
-    return [];
+    const series = data?.["Time Series (Daily)"];
+    if (!series) {
+      throw new Error("Alpha Vantage: unexpected response format");
+    }
+
+    const candles: Candle[] = Object.entries(series).map(([date, ohlc]: any) => ({
+      date,
+      open: Number(ohlc["1. open"]),
+      high: Number(ohlc["2. high"]),
+      low: Number(ohlc["3. low"]),
+      close: Number(ohlc["4. close"]),
+      volume: Number(ohlc["6. volume"] ?? ohlc["5. volume"])
+    }));
+
+    candles.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+    marketDataCache.set(cacheKey, candles);
+    return candles;
   }
 };
