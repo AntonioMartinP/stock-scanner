@@ -3,9 +3,40 @@ import type {Stock} from "@/domain/entities/Stock";
 export const IBEX35_MARKET_ID = "ibex35";
 
 export const ibex35Stocks: Stock[] = [
+  {marketId: IBEX35_MARKET_ID, ticker: "^IBEX", name: "IBEX 35", tradingViewSymbol: "BME:IBC"},
   {marketId: IBEX35_MARKET_ID, ticker: "SAN", name: "Banco Santander", tradingViewSymbol: "BME:SAN"},
   {marketId: IBEX35_MARKET_ID, ticker: "BBVA", name: "BBVA", tradingViewSymbol: "BME:BBVA"},
   {marketId: IBEX35_MARKET_ID, ticker: "IBE", name: "Iberdrola", tradingViewSymbol: "BME:IBE"},
-  {marketId: IBEX35_MARKET_ID, ticker: "ITX", name: "Inditex", tradingViewSymbol: "BME:ITX"}
-  // luego metemos el resto del IBEX
+  {marketId: IBEX35_MARKET_ID, ticker: "ITX", name: "Inditex", tradingViewSymbol: "BME:ITX"},
+  {marketId: IBEX35_MARKET_ID, ticker: "TEF", name: "Telefónica", tradingViewSymbol: "BME:TEF"},
+  {marketId: IBEX35_MARKET_ID, ticker: "REP", name: "Repsol", tradingViewSymbol: "BME:REP"},
+  {marketId: IBEX35_MARKET_ID, ticker: "CABK", name: "CaixaBank", tradingViewSymbol: "BME:CABK"},
+  {marketId: IBEX35_MARKET_ID, ticker: "ACS", name: "ACS", tradingViewSymbol: "BME:ACS"},
+  {marketId: IBEX35_MARKET_ID, ticker: "FER", name: "Ferrovial", tradingViewSymbol: "BME:FER"},
+  {marketId: IBEX35_MARKET_ID, ticker: "ENG", name: "Enagás", tradingViewSymbol: "BME:ENG"},
+  {marketId: IBEX35_MARKET_ID, ticker: "IAG", name: "IAG", tradingViewSymbol: "BME:IAG"},
+  {marketId: IBEX35_MARKET_ID, ticker: "ELE", name: "Endesa", tradingViewSymbol: "BME:ELE"},
+  {marketId: IBEX35_MARKET_ID, ticker: "AENA", name: "Aena", tradingViewSymbol: "BME:AENA"},
+  {marketId: IBEX35_MARKET_ID, ticker: "MAP", name: "Mapfre", tradingViewSymbol: "BME:MAP"},
+  {marketId: IBEX35_MARKET_ID, ticker: "GRF", name: "Grifols", tradingViewSymbol: "BME:GRF"},
+  {marketId: IBEX35_MARKET_ID, ticker: "ACX", name: "Acerinox", tradingViewSymbol: "BME:ACX"},
+  {marketId: IBEX35_MARKET_ID, ticker: "AMS", name: "Amadeus", tradingViewSymbol: "BME:AMS"},
+  {marketId: IBEX35_MARKET_ID, ticker: "BKT", name: "Bankinter", tradingViewSymbol: "BME:BKT"},
+  {marketId: IBEX35_MARKET_ID, ticker: "COL", name: "Inmobiliaria Colonial", tradingViewSymbol: "BME:COL"},
+  {marketId: IBEX35_MARKET_ID, ticker: "CLNX", name: "Cellnex", tradingViewSymbol: "BME:CLNX"},
+  {marketId: IBEX35_MARKET_ID, ticker: "MRL", name: "Merlin Properties", tradingViewSymbol: "BME:MRL"},
+  {marketId: IBEX35_MARKET_ID, ticker: "MEL", name: "Meliá Hotels", tradingViewSymbol: "BME:MEL"},
+  {marketId: IBEX35_MARKET_ID, ticker: "REE", name: "Red Eléctrica", tradingViewSymbol: "BME:REE"},
+  {marketId: IBEX35_MARKET_ID, ticker: "SAB", name: "Sabadell", tradingViewSymbol: "BME:SAB"},
+  {marketId: IBEX35_MARKET_ID, ticker: "SCYR", name: "Sacyr", tradingViewSymbol: "BME:SCYR"},
+  {marketId: IBEX35_MARKET_ID, ticker: "SLR", name: "Solaria", tradingViewSymbol: "BME:SLR"},
+  {marketId: IBEX35_MARKET_ID, ticker: "LGT", name: "Logista", tradingViewSymbol: "BME:LOG"},
+  {marketId: IBEX35_MARKET_ID, ticker: "NTGY", name: "Naturgy", tradingViewSymbol: "BME:NTGY"},
+  {marketId: IBEX35_MARKET_ID, ticker: "UNI", name: "Unicaja", tradingViewSymbol: "BME:UNI"},
+  {marketId: IBEX35_MARKET_ID, ticker: "PHM", name: "PharmaMar", tradingViewSymbol: "BME:PHM"},
+  {marketId: IBEX35_MARKET_ID, ticker: "FDR", name: "Fluidra", tradingViewSymbol: "BME:FDR"},
+  {marketId: IBEX35_MARKET_ID, ticker: "ANA", name: "Acciona", tradingViewSymbol: "BME:ANA"},
+  {marketId: IBEX35_MARKET_ID, ticker: "IDR", name: "Indra", tradingViewSymbol: "BME:IDR"},
+  {marketId: IBEX35_MARKET_ID, ticker: "ROVI", name: "Laboratorios Rovi", tradingViewSymbol: "BME:ROVI"},
+  {marketId: IBEX35_MARKET_ID, ticker: "ALM", name: "Almirall", tradingViewSymbol: "BME:ALM"}
 ];

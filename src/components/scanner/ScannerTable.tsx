@@ -99,9 +99,9 @@ export default function ScannerTable({
         </button>
       </div>
 
-      <div className="overflow-auto rounded border">
+      <div className="overflow-auto rounded border max-h-[600px]">
         <table className="w-full text-xs">
-          <thead className="sticky top-0 bg-white">
+          <thead className="sticky top-0 bg-white z-10">
             <tr className="border-b">
               <Th onClick={() => toggleSort("ticker")}>{t("table.ticker")}</Th>
               <Th onClick={() => toggleSort("name")}>{t("table.name")}</Th>
