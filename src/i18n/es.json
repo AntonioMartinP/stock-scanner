@@ -1,4 +1,8 @@
 {
+  "nav": {
+    "home": "Inicio",
+    "scanner": "Scanner"
+  },
   "home": {
     "title": "Scanner ATH",
     "subtitle": "Dashboard de máximos históricos",

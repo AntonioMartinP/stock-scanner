@@ -31,36 +31,36 @@ export default function LanguageSwitcher() {
 
   return (
     <div 
-      className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700"
+      className="bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
       role="group"
       aria-label="Language switcher"
     >
-      <div className="flex gap-1 p-1">
-        {locales.map((locale) => (
-          <button
-            key={locale}
-            onClick={() => changeLanguage(locale)}
-            disabled={isPending || locale === currentLocale}
-            className={`
-              px-4 py-2 rounded-md font-medium transition-all
-              flex items-center gap-2
-              ${
-                locale === currentLocale
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-transparent text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-              }
-              ${
-                isPending ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-              }
-              disabled:cursor-not-allowed
-            `}
-            aria-label={`Switch to ${localeNames[locale]}`}
-            aria-current={locale === currentLocale ? 'true' : 'false'}
-          >
-            <span aria-hidden="true">{localeFlags[locale]}</span>
-            <span className="text-sm font-semibold">{locale.toUpperCase()}</span>
-          </button>
-        ))}
+      <div className="flex p-0.5">
+        {locales.map((locale) => {
+          if (!Object.keys(localeNames).includes(locale)) return null;
+          return (
+            <button
+              key={locale}
+              onClick={() => changeLanguage(locale)}
+              disabled={isPending || locale === currentLocale}
+              className={`
+                px-3 py-1.5 rounded text-sm font-medium transition-all
+                flex items-center gap-1.5
+                ${
+                  locale === currentLocale
+                    ? 'bg-white text-blue-600 shadow-sm border border-gray-100 ring-1 ring-black/5'
+                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
+                }
+                ${isPending ? 'opacity-50 cursor-wait' : ''}
+              `}
+              aria-label={`Switch to ${localeNames[locale]}`}
+              aria-pressed={locale === currentLocale}
+            >
+              <span aria-hidden="true">{localeFlags[locale]}</span>
+              <span className="text-sm font-semibold">{locale.toUpperCase()}</span>
+            </button>
+          );
+        })}
       </div>
       {isPending && (
         <div className="absolute inset-0 bg-white/50 dark:bg-gray-800/50 rounded-lg flex items-center justify-center">

@@ -1,4 +1,8 @@
 {
+  "nav": {
+    "home": "Home",
+    "scanner": "Scanner"
+  },
   "home": {
     "title": "ATH Scanner",
     "subtitle": "All-time highs dashboard",
