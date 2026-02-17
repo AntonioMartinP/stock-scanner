@@ -21,6 +21,10 @@
       "showAll": "Todos",
       "refresh": "Actualizar"
     },
+    "markets": {
+      "ibex35": "IBEX 35",
+      "dax40": "DAX 40"
+    },
     "modes": {
       "ath_real": "ATH real",
       "ath_52w": "ATH 52 semanas"

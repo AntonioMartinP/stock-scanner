@@ -21,6 +21,10 @@
       "showAll": "Show all",
       "refresh": "Refresh"
     },
+    "markets": {
+      "ibex35": "IBEX 35",
+      "dax40": "DAX 40"
+    },
     "modes": {
       "ath_real": "All-time high",
       "ath_52w": "52-week high"

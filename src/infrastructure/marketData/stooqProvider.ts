@@ -1,6 +1,7 @@
 import type { Candle, MarketDataProvider } from "./MarketDataProvider";
 import { marketDataCache } from "@/infrastructure/cache/memoryCache";
 import { ibexToStooqSymbol } from "./mappings/ibexMappings";
+import { daxToStooqSymbol } from "./mappings/daxMappings";
 
 function parseStooqCsv(csv: string): Candle[] {
   const lines = csv.trim().split("\n");
@@ -26,11 +27,17 @@ export const stooqProvider: MarketDataProvider = {
   id: "stooq",
 
   async getDailyHistory({ marketId, ticker }): Promise<Candle[]> {
-    if (marketId !== "ibex35") {
+    const mappings: Record<string, Record<string, string>> = {
+      ibex35: ibexToStooqSymbol,
+      dax40: daxToStooqSymbol
+    };
+
+    const symbolMap = mappings[marketId];
+    if (!symbolMap) {
       throw new Error(`Stooq provider: unsupported marketId ${marketId}`);
     }
 
-    const symbol = ibexToStooqSymbol[ticker];
+    const symbol = symbolMap[ticker];
     if (!symbol) throw new Error(`Stooq mapping not found for ticker: ${ticker}`);
 
     const cacheKey = marketDataCache.makeKey(["history", "stooq", marketId, ticker, symbol]);

@@ -44,5 +44,6 @@ export async function runScanner(input: {
     })
   );
 
-  return results.filter((r): r is NonNullable<typeof r> => r !== null);
+  // Filter out null results and stocks with ATH=0 (indicates data errors)
+  return results.filter((r): r is NonNullable<typeof r> => r !== null && r.ath !== 0);
 }

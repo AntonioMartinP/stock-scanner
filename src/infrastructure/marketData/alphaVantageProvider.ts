@@ -2,6 +2,7 @@ import type { Candle, MarketDataProvider } from "./MarketDataProvider";
 import { ProviderRateLimitError } from "./errors";
 import { marketDataCache } from "@/infrastructure/cache/memoryCache";
 import { ibexToAlphaVantageSymbol } from "./mappings/ibexMappings";
+import { daxToAlphaVantageSymbol } from "./mappings/daxMappings";
 
 function mustGetEnv(name: string): string {
   const v = process.env[name];
@@ -13,11 +14,17 @@ export const alphaVantageProvider: MarketDataProvider = {
   id: "alphavantage",
 
   async getDailyHistory({ marketId, ticker }): Promise<Candle[]> {
-    if (marketId !== "ibex35") {
+    const mappings: Record<string, Record<string, string>> = {
+      ibex35: ibexToAlphaVantageSymbol,
+      dax40: daxToAlphaVantageSymbol
+    };
+
+    const symbolMap = mappings[marketId];
+    if (!symbolMap) {
       throw new Error(`Alpha Vantage provider: unsupported marketId ${marketId}`);
     }
 
-    const symbol = ibexToAlphaVantageSymbol[ticker];
+    const symbol = symbolMap[ticker];
     if (!symbol) throw new Error(`Alpha Vantage mapping not found for ticker: ${ticker}`);
 
     const cacheKey = marketDataCache.makeKey(["history", "alphavantage", marketId, ticker, symbol]);

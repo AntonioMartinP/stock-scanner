@@ -1,6 +1,7 @@
 import type { Candle, MarketDataProvider } from "./MarketDataProvider";
 import { marketDataCache } from "@/infrastructure/cache/memoryCache";
 import { ibexToYahooSymbol } from "./mappings/ibexMappings";
+import { daxToYahooSymbol } from "./mappings/daxMappings";
 import YahooFinance from "yahoo-finance2";
 
 const yahooFinance = new YahooFinance();
@@ -9,11 +10,17 @@ export const yahooProvider: MarketDataProvider = {
   id: "yahoo" as any,
 
   async getDailyHistory({ marketId, ticker }): Promise<Candle[]> {
-    if (marketId !== "ibex35") {
+    const mappings: Record<string, Record<string, string>> = {
+      ibex35: ibexToYahooSymbol,
+      dax40: daxToYahooSymbol
+    };
+
+    const symbolMap = mappings[marketId];
+    if (!symbolMap) {
       throw new Error(`Yahoo provider: unsupported marketId ${marketId}`);
     }
 
-    const symbol = ibexToYahooSymbol[ticker];
+    const symbol = symbolMap[ticker];
     if (!symbol) {
       console.error(`Yahoo mapping not found for ticker: ${ticker}`);
       throw new Error(`Yahoo mapping not found for ticker: ${ticker}`);

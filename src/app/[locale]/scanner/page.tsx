@@ -27,9 +27,9 @@ export default function ScannerPage() {
   useEffect(() => {
     fetch("/api/markets")
       .then(r => r.json())
-      .then(p => setMarkets((p.data ?? []).map((m: any) => ({ id: m.id, label: m.name }))))
+      .then(p => setMarkets((p.data ?? []).map((m: any) => ({ id: m.id, label: t(`markets.${m.id}`) }))))
       .catch(() => {});
-  }, []);
+  }, [t]);
 
   const fetchData = () => {
     setErrorMsg(null);
