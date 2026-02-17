@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from 'react';
+import {useLocale} from "next-intl";
 
 declare global {
   interface Window {
@@ -11,6 +12,7 @@ declare global {
 export default function TradingViewWidget({ symbol }: { symbol: string }) {
   const container = useRef<HTMLDivElement>(null);
   const scriptLoaded = useRef(false);
+  const locale = useLocale();
 
   useEffect(() => {
     if (!container.current) return;
@@ -43,7 +45,7 @@ export default function TradingViewWidget({ symbol }: { symbol: string }) {
         timezone: 'Europe/Madrid',
         theme: 'light',
         style: '0',
-        locale: 'es',
+        locale,
         toolbar_bg: '#f1f3f6',
         enable_publishing: false,
         allow_symbol_change: false,
@@ -59,7 +61,7 @@ export default function TradingViewWidget({ symbol }: { symbol: string }) {
     }
 
     loadScript();
-  }, [symbol]);
+  }, [symbol, locale]);
 
   return (
     <div 

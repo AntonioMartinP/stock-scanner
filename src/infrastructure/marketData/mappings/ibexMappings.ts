@@ -40,7 +40,7 @@ export const ibexToYahooSymbol: Record<string, string> = {
   SAB: "SAB.MC",
   SCYR: "SCYR.MC",
   SLR: "SLR.MC",
-  LGT: "LGT.MC",
+  LGT: "LOG.MC",
   NTGY: "NTGY.MC",
   UNI: "UNI.MC",
   PHM: "PHM.MC",

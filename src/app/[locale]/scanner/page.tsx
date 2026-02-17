@@ -42,7 +42,7 @@ export default function ScannerPage() {
         if (!res.ok) {
           setRows([]);
           setSelected(null);
-          setErrorMsg(payload?.error ?? "Unexpected error.");
+          setErrorMsg(payload?.error ?? t("errors.unexpected"));
           return;
         }
 
@@ -54,7 +54,7 @@ export default function ScannerPage() {
 
         setRows(rowsWithTimestamp);
       })
-      .catch(() => setErrorMsg("Network error."))
+      .catch(() => setErrorMsg(t("errors.network")))
       .finally(() => setIsRefreshing(false));
   };
 
@@ -69,7 +69,7 @@ export default function ScannerPage() {
       <div className="flex w-1/2 flex-col gap-4 p-4 overflow-hidden">
         <div className="flex items-center justify-between">
           <div className="text-xl font-semibold">{t("title")}</div>
-          {loading && <div className="text-sm text-blue-600 animate-pulse font-medium">Loading...</div>}
+          {loading && <div className="text-sm text-blue-600 animate-pulse font-medium">{t("loading")}</div>}
         </div>
 
         <ScannerControls

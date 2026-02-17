@@ -1,10 +1,16 @@
 {
   "home": {
     "title": "ATH Scanner",
-    "subtitle": "All-time highs dashboard"
+    "subtitle": "All-time highs dashboard",
+    "goToScanner": "Go to scanner"
   },
   "scanner": {
     "title": "Scanner",
+    "loading": "Loading...",
+    "errors": {
+      "unexpected": "Unexpected error.",
+      "network": "Network error."
+    },
     "controls": {
       "market": "Market",
       "source": "Source",

@@ -1,10 +1,16 @@
 {
   "home": {
     "title": "Scanner ATH",
-    "subtitle": "Dashboard de máximos históricos"
+    "subtitle": "Dashboard de máximos históricos",
+    "goToScanner": "Ir al scanner"
   },
   "scanner": {
     "title": "Scanner",
+    "loading": "Cargando...",
+    "errors": {
+      "unexpected": "Error inesperado.",
+      "network": "Error de red."
+    },
     "controls": {
       "market": "Mercado",
       "source": "Fuente",
