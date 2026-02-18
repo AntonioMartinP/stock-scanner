@@ -2,6 +2,8 @@
 
 import TradingViewWidget from "@/components/scanner/TradingViewWidget";
 import type { ScannerRow } from "@/application/dto/ScannerResult";
+import { fmtMoney, fmtPct, fmtDateTimeFull, getDistanceStyle } from "@/lib/formatters";
+import { sanitizeSymbol } from "@/lib/security";
 
 export default function StockDetailsPanel({
   row,
@@ -20,7 +22,7 @@ export default function StockDetailsPanel({
     );
   }
 
-  const distancePositive = row.distancePct >= 0;
+  const distStyle = getDistanceStyle(row.isNewAth, row.isNearAth);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4 p-4 md:p-6 md:h-full">
@@ -57,18 +59,12 @@ export default function StockDetailsPanel({
           <p className="text-xs font-medium text-purple-500">{t("table.ath")}</p>
           <p className="mt-0.5 text-lg font-bold text-gray-900">{fmtMoney(row.ath)}</p>
         </div>
-        {/* Distancia — green if near/ath, orange if positive far */}
-        <div className={`rounded-xl px-4 py-3 ${
-          row.isNewAth ? "bg-green-50" : row.isNearAth ? "bg-yellow-50" : "bg-gray-50"
-        }`}>
-          <p className={`text-xs font-medium ${
-            row.isNewAth ? "text-green-500" : row.isNearAth ? "text-yellow-600" : "text-gray-500"
-          }`}>{t("table.distance")}</p>
-          <p className={`mt-0.5 text-lg font-bold ${
-            row.isNewAth ? "text-green-600" : row.isNearAth ? "text-orange-600" : "text-gray-900"
-          }`}>{fmtPct(row.distancePct)}</p>
+        {/* Distancia */}
+        <div className={`rounded-xl px-4 py-3 ${distStyle.bg}`}>
+          <p className={`text-xs font-medium ${distStyle.label}`}>{t("table.distance")}</p>
+          <p className={`mt-0.5 text-lg font-bold ${distStyle.value}`}>{fmtPct(row.distancePct)}</p>
           {row.isNewAth && (
-            <p className="text-xs text-green-500 mt-0.5">Above ATH</p>
+            <p className="text-xs text-green-500 mt-0.5">{t("badge.aboveAth")}</p>
           )}
         </div>
         {/* Última actualización */}
@@ -80,28 +76,16 @@ export default function StockDetailsPanel({
         </div>
       </div>
 
-      {/* Chart */}
+      {/* Chart — symbol sanitised before reaching the widget */}
       <div className="h-[60vh] md:h-auto md:flex-1 rounded-xl border border-gray-200 overflow-hidden">
-        <TradingViewWidget symbol={row.tradingViewSymbol} />
+        <TradingViewWidget symbol={sanitizeSymbol(row.tradingViewSymbol)} />
       </div>
 
     </div>
   );
 }
 
-function fmtMoney(v: number) {
-  return new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }).format(v);
-}
-function fmtPct(v: number) {
-  return `${v.toFixed(2)}%`;
-}
-function fmtDateTimeFull(date: Date) {
-  return new Intl.DateTimeFormat(undefined, {
-    day:    "numeric",
-    month:  "numeric",
-    year:   "numeric",
-    hour:   "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  }).format(date);
-}
+/** Allow only canonical TradingView symbols: EXCHANGE:TICKER (e.g. BME:SAN, ^IBEX)
+ * @deprecated Import sanitizeSymbol from @/lib/security instead.
+ * Kept here only as a comment anchor — function is now in lib/security.ts.
+ */

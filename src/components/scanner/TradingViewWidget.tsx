@@ -14,6 +14,11 @@ export default function TradingViewWidget({ symbol }: { symbol: string }) {
   const scriptLoaded = useRef(false);
   const locale = useLocale();
 
+  // Guard: render nothing if symbol is empty or did not pass caller-side sanitization
+  if (!symbol) {
+    return <div className="flex h-full items-center justify-center text-sm text-gray-400">Symbol unavailable</div>;
+  }
+
   useEffect(() => {
     if (!container.current) return;
 

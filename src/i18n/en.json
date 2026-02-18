@@ -77,6 +77,9 @@
     "empty": {
       "noResults": "No results",
       "selectRow": "Select a row to see details."
+    },
+    "badge": {
+      "aboveAth": "Above ATH"
     }
   }
 }
