@@ -1,7 +1,7 @@
 "use client";
 
 import TradingViewWidget from "@/components/scanner/TradingViewWidget";
-import type { ScannerRow } from "@/components/scanner/ScannerTable";
+import type { ScannerRow } from "@/application/dto/ScannerResult";
 
 export default function StockDetailsPanel({
   row,

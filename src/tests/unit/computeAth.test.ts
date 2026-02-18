@@ -12,7 +12,8 @@ describe("computeAth", () => {
     const r = computeAth(candles as any, "ath_real");
     expect(r.isNewAth).toBe(true);
     expect(r.currentHigh).toBe(20);
-    expect(r.ath).toBe(13);
+    expect(r.previousAth).toBe(13); // highest of all candles before the last
+    expect(r.ath).toBe(20);         // when isNewAth=true, ath equals currentHigh
   });
 
   it("marks near ATH when within threshold and not a new ATH", () => {

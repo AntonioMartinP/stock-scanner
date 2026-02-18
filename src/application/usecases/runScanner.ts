@@ -1,12 +1,13 @@
 import { markets } from "@/config/markets";
-import { getProvider } from "@/infrastructure/marketData/providerFactory";
+import { getProvider, DataSource } from "@/infrastructure/marketData/providerFactory";
 import { computeAth, AthMode } from "@/domain/services/computeAth";
+import type { ScannerResult } from "@/application/dto/ScannerResult";
 
 export async function runScanner(input: {
   marketId: keyof typeof markets;
-  source: "stooq" | "alphavantage";
+  source: DataSource;
   mode: AthMode;
-}) {
+}): Promise<ScannerResult[]> {
   const { marketId, source, mode } = input;
   const market = markets[marketId];
 

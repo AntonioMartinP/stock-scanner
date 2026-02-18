@@ -7,7 +7,7 @@ import YahooFinance from "yahoo-finance2";
 const yahooFinance = new YahooFinance();
 
 export const yahooProvider: MarketDataProvider = {
-  id: "yahoo" as any,
+  id: "yahoo",
 
   async getDailyHistory({ marketId, ticker }): Promise<Candle[]> {
     const mappings: Record<string, Record<string, string>> = {

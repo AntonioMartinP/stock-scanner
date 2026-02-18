@@ -23,9 +23,9 @@ export async function GET(req: Request) {
 
   try {
     const data = await runScanner({
-      marketId: parsed.data.market as any,
-      source: parsed.data.source as any,
-      mode: parsed.data.mode as any
+      marketId: parsed.data.market,
+      source: parsed.data.source,
+      mode: parsed.data.mode
     });
 
     return Response.json({ data });

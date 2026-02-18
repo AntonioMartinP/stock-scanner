@@ -2,18 +2,9 @@
 
 import React from "react";
 import Badge from "@/components/ui/Badge";
+import type { ScannerRow } from "@/application/dto/ScannerResult";
 
-export type ScannerRow = {
-  ticker: string;
-  name: string;
-  tradingViewSymbol: string;
-  ath: number;
-  currentHigh: number;
-  distancePct: number;
-  isNewAth: boolean;
-  isNearAth: boolean;
-  lastUpdate?: Date;
-};
+export type { ScannerRow };
 
 type SortKey = "ticker" | "name" | "currentHigh" | "ath" | "distancePct" | "lastUpdate";
 

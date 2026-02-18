@@ -4,6 +4,20 @@ import {notFound} from 'next/navigation';
 import {routing} from '@/i18n/routing';
 import Navbar from '@/components/layout/Navbar';
 import '@/app/globals.css';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: {
+    template: '%s | StockScanner',
+    default: 'StockScanner',
+  },
+  description: 'ATH Scanner — Track all-time highs for IBEX 35 and DAX 40',
+  openGraph: {
+    title: 'StockScanner',
+    description: 'ATH Scanner — Track all-time highs for IBEX 35 and DAX 40',
+    type: 'website',
+  },
+};
 
 export default async function LocaleLayout({
   children,

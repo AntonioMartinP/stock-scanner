@@ -1,6 +1,8 @@
 "use client";
 
 import Select from "@/components/ui/Select";
+import type { DataSource } from "@/infrastructure/marketData/providerFactory";
+import type { AthMode } from "@/domain/services/computeAth";
 
 export default function ScannerControls({
   markets,
@@ -17,10 +19,10 @@ export default function ScannerControls({
   markets: Array<{ id: string; label: string }>;
   marketId: string;
   setMarketId: (v: string) => void;
-  source: "stooq" | "alphavantage" | "yahoo";
-  setSource: (v: any) => void;
-  mode: "ath_real" | "ath_52w";
-  setMode: (v: any) => void;
+  source: DataSource;
+  setSource: (v: DataSource) => void;
+  mode: AthMode;
+  setMode: (v: AthMode) => void;
   onRefresh: () => void;
   isRefreshing: boolean;
   t: (key: string) => string;
@@ -40,7 +42,7 @@ export default function ScannerControls({
 
       <label className="flex items-center gap-2 text-sm">
         <span className="text-gray-600">{t("controls.source")}</span>
-        <Select value={source} onChange={e => setSource(e.target.value)}>
+        <Select value={source} onChange={e => setSource(e.target.value as DataSource)}>
           <option value="stooq">{t("sources.stooq")}</option>
           <option value="alphavantage">{t("sources.alphavantage")}</option>
           <option value="yahoo">{t("sources.yahoo")}</option>
@@ -49,7 +51,7 @@ export default function ScannerControls({
 
       <label className="flex items-center gap-2 text-sm">
         <span className="text-gray-600">{t("controls.mode")}</span>
-        <Select value={mode} onChange={e => setMode(e.target.value)}>
+        <Select value={mode} onChange={e => setMode(e.target.value as AthMode)}>
           <option value="ath_real">{t("modes.ath_real")}</option>
           <option value="ath_52w">{t("modes.ath_52w")}</option>
         </Select>
