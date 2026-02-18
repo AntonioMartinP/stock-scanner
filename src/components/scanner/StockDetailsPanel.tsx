@@ -12,26 +12,37 @@ export default function StockDetailsPanel({
 }) {
   if (!row) {
     return (
-      <div className="h-full p-4 text-sm text-gray-600">
-        {t("empty.selectRow")}
+      <div className="flex h-full items-center justify-center">
+        <p className="text-sm text-gray-400">{t("empty.selectRow")}</p>
       </div>
     );
   }
 
   return (
-    <div className="flex h-full flex-col gap-3 p-4">
+    <div className="flex h-full flex-col gap-4 p-6">
+
+      {/* Header */}
       <div>
-        <div className="text-lg font-medium">
-          {row.ticker} — {row.name}
+        <div className="flex items-center gap-3">
+          <span className="text-xl font-bold text-gray-900">{row.ticker}</span>
+          <span className="text-base text-gray-500">{row.name}</span>
         </div>
-        <div className="mt-1 text-sm text-gray-600">
-          {t("table.currentHigh")}: {fmtMoney(row.currentHigh)} · {t("table.ath")}: {fmtMoney(row.ath)} · {t("table.distance")}: {fmtPct(row.distancePct)}
+        <div className="mt-3 flex gap-4">
+          <Stat label={t("table.currentHigh")} value={fmtMoney(row.currentHigh)} />
+          <Stat label={t("table.ath")} value={fmtMoney(row.ath)} />
+          <Stat
+            label={t("table.distance")}
+            value={fmtPct(row.distancePct)}
+            valueClass={row.distancePct <= 2 ? "text-orange-600" : "text-gray-900"}
+          />
         </div>
       </div>
 
-      <div className="rounded border p-2 flex-1">
+      {/* Chart */}
+      <div className="flex-1 rounded-xl border border-gray-200 overflow-hidden">
         <TradingViewWidget symbol={row.tradingViewSymbol} />
       </div>
+
     </div>
   );
 }
@@ -41,4 +52,13 @@ function fmtMoney(v: number) {
 }
 function fmtPct(v: number) {
   return `${v.toFixed(2)}%`;
+}
+
+function Stat({ label, value, valueClass }: { label: string; value: string; valueClass?: string }) {
+  return (
+    <div className="flex flex-col gap-0.5">
+      <span className="text-xs font-medium uppercase tracking-wide text-gray-400">{label}</span>
+      <span className={`text-base font-semibold ${valueClass ?? "text-gray-900"}`}>{value}</span>
+    </div>
+  );
 }

@@ -67,33 +67,36 @@ export default function ScannerPage() {
   }, [fetchData]);
 
   return (
-    <div className="flex h-screen text-gray-900 bg-white">
-      <div className="flex w-1/2 flex-col gap-4 p-4 overflow-hidden">
-        <div className="flex items-center justify-between">
-          <div className="text-xl font-semibold">{t("title")}</div>
-          {isRefreshing && <div className="text-sm text-blue-600 animate-pulse font-medium">{t("loading")}</div>}
+    <div className="flex h-[calc(100vh-4rem)] bg-gray-50">
+
+      {/* Left column */}
+      <div className="flex w-1/2 flex-col gap-4 p-6 overflow-hidden">
+
+        {/* Controls card */}
+        <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+          <ScannerControls
+            markets={markets}
+            marketId={marketId}
+            setMarketId={setMarketId}
+            source={source}
+            setSource={setSource}
+            mode={mode}
+            setMode={setMode}
+            onRefresh={fetchData}
+            isRefreshing={isRefreshing}
+            t={tStr}
+          />
         </div>
 
-        <ScannerControls
-          markets={markets}
-          marketId={marketId}
-          setMarketId={setMarketId}
-          source={source}
-          setSource={setSource}
-          mode={mode}
-          setMode={setMode}
-          onRefresh={fetchData}
-          isRefreshing={isRefreshing}
-          t={tStr}
-        />
-
+        {/* Error */}
         {errorMsg && (
-          <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
             {errorMsg}
           </div>
         )}
 
-        <div className="flex-1 overflow-hidden">
+        {/* Table card */}
+        <div className="flex-1 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
           <ScannerTable
             rows={rows}
             onSelect={setSelected}
@@ -105,11 +108,14 @@ export default function ScannerPage() {
             setFilter={setFilter}
           />
         </div>
+
       </div>
 
-      <div className="w-1/2 border-l border-gray-200 overflow-hidden bg-gray-50">
+      {/* Right column — details */}
+      <div className="w-1/2 border-l border-gray-200 bg-white overflow-hidden">
         <StockDetailsPanel row={selected} t={tStr} />
       </div>
+
     </div>
   );
 }
