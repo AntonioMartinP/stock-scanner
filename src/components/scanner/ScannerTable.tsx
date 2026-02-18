@@ -73,12 +73,12 @@ export default function ScannerTable({
   const allCount  = rows.length;
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex flex-col md:h-full">
 
-      {/* Search + filters */}
-      <div className="flex items-center gap-2 border-b border-gray-100 px-4 py-3">
+      {/* Search + filters — wraps on mobile */}
+      <div className="flex flex-wrap items-center gap-2 border-b border-gray-100 px-4 py-3">
         {/* Search with icon */}
-        <div className="relative flex-1">
+        <div className="relative w-full sm:flex-1 sm:w-auto">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
@@ -97,40 +97,42 @@ export default function ScannerTable({
         </div>
 
         {/* Filter buttons */}
-        <button
-          onClick={() => setFilter("all")}
-          className={`h-9 rounded-lg px-4 text-sm font-medium transition ${
-            filter === "all"
-              ? "bg-blue-600 text-white shadow-sm"
-              : "border border-gray-200 text-gray-600 hover:bg-gray-50"
-          }`}
-        >
-          {t("controls.showAll")} ({allCount})
-        </button>
-        <button
-          onClick={() => setFilter("ath")}
-          className={`h-9 rounded-lg px-4 text-sm font-medium transition ${
-            filter === "ath"
-              ? "bg-blue-600 text-white shadow-sm"
-              : "border border-gray-200 text-gray-600 hover:bg-gray-50"
-          }`}
-        >
-          {t("controls.onlyAth")} ({athCount})
-        </button>
-        <button
-          onClick={() => setFilter("near")}
-          className={`h-9 rounded-lg px-4 text-sm font-medium transition ${
-            filter === "near"
-              ? "bg-blue-600 text-white shadow-sm"
-              : "border border-gray-200 text-gray-600 hover:bg-gray-50"
-          }`}
-        >
-          {t("controls.onlyNear")} ({nearCount})
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setFilter("all")}
+            className={`h-9 rounded-lg px-3 text-sm font-medium transition ${
+              filter === "all"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "border border-gray-200 text-gray-600 hover:bg-gray-50"
+            }`}
+          >
+            {t("controls.showAll")} ({allCount})
+          </button>
+          <button
+            onClick={() => setFilter("ath")}
+            className={`h-9 rounded-lg px-3 text-sm font-medium transition ${
+              filter === "ath"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "border border-gray-200 text-gray-600 hover:bg-gray-50"
+            }`}
+          >
+            {t("controls.onlyAth")} ({athCount})
+          </button>
+          <button
+            onClick={() => setFilter("near")}
+            className={`h-9 rounded-lg px-3 text-sm font-medium transition ${
+              filter === "near"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "border border-gray-200 text-gray-600 hover:bg-gray-50"
+            }`}
+          >
+            {t("controls.onlyNear")} ({nearCount})
+          </button>
+        </div>
       </div>
 
-      {/* Table */}
-      <div className="flex-1 overflow-auto">
+      {/* Table — scrollable; on desktop fills remaining space, on mobile auto-expands */}
+      <div className="overflow-auto md:flex-1">
         <table className="w-full text-sm">
           <thead className="sticky top-0 bg-white z-10 border-b border-gray-100">
             <tr>
@@ -139,8 +141,9 @@ export default function ScannerTable({
               <Th>{t("table.status")}</Th>
               <Th onClick={() => toggleSort("currentHigh")} align="right">{t("table.currentHigh")}</Th>
               <Th onClick={() => toggleSort("ath")} align="right">{t("table.ath")}</Th>
-              <Th onClick={() => toggleSort("distancePct")} align="right">{t("table.distance")}</Th>
-              <Th onClick={() => toggleSort("lastUpdate")}>{t("table.lastUpdate")}</Th>
+              {/* Hidden on mobile */}
+              <Th onClick={() => toggleSort("distancePct")} align="right" hideOnMobile>{t("table.distance")}</Th>
+              <Th onClick={() => toggleSort("lastUpdate")} hideOnMobile>{t("table.lastUpdate")}</Th>
             </tr>
           </thead>
           <tbody>
@@ -173,10 +176,11 @@ export default function ScannerTable({
                   </Td>
                   <Td align="right" className="font-mono text-gray-800">{fmtMoney(r.currentHigh)}</Td>
                   <Td align="right" className="font-mono text-gray-800">{fmtMoney(r.ath)}</Td>
-                  <Td align="right" className={`font-mono font-medium ${r.isNearAth && !r.isNewAth ? "text-black-600" : "text-gray-900"}`}>
+                  {/* Hidden on mobile */}
+                  <Td align="right" hideOnMobile className={`font-mono font-medium text-gray-900`}>
                     {fmtPct(r.distancePct)}
                   </Td>
-                  <Td className="font-mono text-gray-400 text-xs">
+                  <Td hideOnMobile className="font-mono text-gray-400 text-xs">
                     {r.lastUpdate ? fmtDateTime(r.lastUpdate) : "-"}
                   </Td>
                 </tr>
@@ -196,14 +200,20 @@ export default function ScannerTable({
   );
 }
 
-function Th({ children, onClick, align }: { children: React.ReactNode; onClick?: () => void; align?: "right" }) {
+function Th({ children, onClick, align, hideOnMobile }: {
+  children: React.ReactNode;
+  onClick?: () => void;
+  align?: "right";
+  hideOnMobile?: boolean;
+}) {
   return (
     <th
       onClick={onClick}
       className={[
         "px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-gray-500",
         align === "right" ? "text-right" : "text-left",
-        onClick ? "cursor-pointer select-none hover:text-gray-900" : ""
+        onClick ? "cursor-pointer select-none hover:text-gray-900" : "",
+        hideOnMobile ? "hidden md:table-cell" : ""
       ].join(" ")}
     >
       {children}
@@ -215,17 +225,24 @@ function Td({
   children,
   className,
   colSpan,
-  align
+  align,
+  hideOnMobile
 }: {
   children: React.ReactNode;
   className?: string;
   colSpan?: number;
   align?: "right";
+  hideOnMobile?: boolean;
 }) {
   return (
     <td
       colSpan={colSpan}
-      className={["px-4 py-2", align === "right" ? "text-right" : "", className ?? ""].join(" ")}
+      className={[
+        "px-4 py-2",
+        align === "right" ? "text-right" : "",
+        hideOnMobile ? "hidden md:table-cell" : "",
+        className ?? ""
+      ].join(" ")}
     >
       {children}
     </td>

@@ -48,7 +48,8 @@
     },
     "markets": {
       "ibex35": "IBEX 35",
-      "dax40": "DAX 40"
+      "dax40": "DAX 40",
+      "ftse_mib40": "FTSE MIB 40"
     },
     "modes": {
       "ath_real": "ATH real",

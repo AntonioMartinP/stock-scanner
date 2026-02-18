@@ -2,6 +2,7 @@ import type { Candle, MarketDataProvider } from "./MarketDataProvider";
 import { marketDataCache } from "@/infrastructure/cache/memoryCache";
 import { ibexToStooqSymbol } from "./mappings/ibexMappings";
 import { daxToStooqSymbol } from "./mappings/daxMappings";
+import { ftse_mib40ToStooqSymbol } from "./mappings/ftse_mibMappings";
 
 function parseStooqCsv(csv: string): Candle[] {
   const lines = csv.trim().split("\n");
@@ -29,7 +30,8 @@ export const stooqProvider: MarketDataProvider = {
   async getDailyHistory({ marketId, ticker }): Promise<Candle[]> {
     const mappings: Record<string, Record<string, string>> = {
       ibex35: ibexToStooqSymbol,
-      dax40: daxToStooqSymbol
+      dax40: daxToStooqSymbol,
+      ftse_mib40: ftse_mib40ToStooqSymbol
     };
 
     const symbolMap = mappings[marketId];

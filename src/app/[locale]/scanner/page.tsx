@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import ScannerControls from "@/components/scanner/ScannerControls";
 import ScannerTable from "@/components/scanner/ScannerTable";
@@ -24,6 +24,17 @@ export default function ScannerPage() {
 
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | "ath" | "near">("all");
+
+  const mobilePanelRef = useRef<HTMLDivElement>(null);
+
+  // Scroll down to the detail panel on mobile when a row is selected
+  useEffect(() => {
+    if (selected && mobilePanelRef.current) {
+      setTimeout(() => {
+        mobilePanelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 50);
+    }
+  }, [selected]);
 
   const [markets, setMarkets] = useState<Array<{id: string; label: string}>>([{id: "ibex35", label: "IBEX 35"}]);
 
@@ -67,10 +78,11 @@ export default function ScannerPage() {
   }, [fetchData]);
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] bg-gray-50">
+    // Mobile: single scrollable column. Desktop: fixed-height two-column split.
+    <div className="flex flex-col md:flex-row md:h-[calc(100vh-4rem)] bg-gray-50">
 
-      {/* Left column */}
-      <div className="flex w-1/2 flex-col gap-4 p-6 overflow-hidden">
+      {/* Main column: controls + table */}
+      <div className="flex flex-col gap-4 p-4 md:p-6 w-full md:w-1/2 md:overflow-hidden">
 
         {/* Controls card */}
         <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
@@ -95,8 +107,9 @@ export default function ScannerPage() {
           </div>
         )}
 
-        {/* Table card */}
-        <div className="flex-1 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+        {/* Table card: on mobile auto-height; on desktop fills remaining space */}
+        <div className="rounded-xl border border-gray-200 bg-white shadow-sm
+                        md:flex-1 md:overflow-hidden">
           <ScannerTable
             rows={rows}
             onSelect={setSelected}
@@ -109,10 +122,21 @@ export default function ScannerPage() {
           />
         </div>
 
+        {/* Mobile detail panel — appears below table when a row is selected */}
+        {selected && (
+          <div ref={mobilePanelRef} className="md:hidden flex flex-col rounded-xl border border-gray-200 bg-white shadow-sm">
+            <StockDetailsPanel
+              row={selected}
+              t={tStr}
+              onClose={() => setSelected(null)}
+            />
+          </div>
+        )}
+
       </div>
 
-      {/* Right column — details */}
-      <div className="w-1/2 border-l border-gray-200 bg-white overflow-hidden">
+      {/* Desktop right column — always visible, hidden on mobile */}
+      <div className="hidden md:flex md:flex-col md:w-1/2 border-l border-gray-200 bg-white overflow-hidden">
         <StockDetailsPanel row={selected} t={tStr} />
       </div>
 

@@ -2,6 +2,7 @@ import type { Candle, MarketDataProvider } from "./MarketDataProvider";
 import { marketDataCache } from "@/infrastructure/cache/memoryCache";
 import { ibexToYahooSymbol } from "./mappings/ibexMappings";
 import { daxToYahooSymbol } from "./mappings/daxMappings";
+import { ftse_mib40ToYahooSymbol } from "./mappings/ftse_mibMappings";
 import YahooFinance from "yahoo-finance2";
 
 const yahooFinance = new YahooFinance();
@@ -12,7 +13,8 @@ export const yahooProvider: MarketDataProvider = {
   async getDailyHistory({ marketId, ticker }): Promise<Candle[]> {
     const mappings: Record<string, Record<string, string>> = {
       ibex35: ibexToYahooSymbol,
-      dax40: daxToYahooSymbol
+      dax40: daxToYahooSymbol,
+      ftse_mib40: ftse_mib40ToYahooSymbol
     };
 
     const symbolMap = mappings[marketId];

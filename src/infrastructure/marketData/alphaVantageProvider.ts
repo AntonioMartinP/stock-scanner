@@ -3,6 +3,7 @@ import { ProviderRateLimitError } from "./errors";
 import { marketDataCache } from "@/infrastructure/cache/memoryCache";
 import { ibexToAlphaVantageSymbol } from "./mappings/ibexMappings";
 import { daxToAlphaVantageSymbol } from "./mappings/daxMappings";
+import { ftse_mib40ToAlphaVantageSymbol } from "./mappings/ftse_mibMappings";
 
 function mustGetEnv(name: string): string {
   const v = process.env[name];
@@ -16,7 +17,8 @@ export const alphaVantageProvider: MarketDataProvider = {
   async getDailyHistory({ marketId, ticker }): Promise<Candle[]> {
     const mappings: Record<string, Record<string, string>> = {
       ibex35: ibexToAlphaVantageSymbol,
-      dax40: daxToAlphaVantageSymbol
+      dax40: daxToAlphaVantageSymbol,
+      ftse_mib40: ftse_mib40ToAlphaVantageSymbol
     };
 
     const symbolMap = mappings[marketId];
