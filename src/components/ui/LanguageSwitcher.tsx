@@ -44,8 +44,8 @@ export default function LanguageSwitcher() {
               onClick={() => changeLanguage(locale)}
               disabled={isPending || locale === currentLocale}
               className={`
-                px-3 py-1.5 rounded text-sm font-medium transition-all
-                flex items-center gap-1.5
+                px-2 py-1 rounded font-medium transition-all
+                flex items-center gap-1
                 ${
                   locale === currentLocale
                     ? 'bg-white text-blue-600 shadow-sm border border-gray-100 ring-1 ring-black/5'
@@ -56,8 +56,8 @@ export default function LanguageSwitcher() {
               aria-label={`Switch to ${localeNames[locale]}`}
               aria-pressed={locale === currentLocale}
             >
-              <span aria-hidden="true">{localeFlags[locale]}</span>
-              <span className="text-sm font-semibold">{locale.toUpperCase()}</span>
+              <span aria-hidden="true" className="text-sm">{localeFlags[locale]}</span>
+              <span className="text-xs font-semibold">{locale.toUpperCase()}</span>
             </button>
           );
         })}

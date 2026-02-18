@@ -1,7 +1,28 @@
 {
   "nav": {
     "home": "Inicio",
-    "scanner": "Scanner"
+    "scanner": "Scanner",
+    "login": "Iniciar Sesión",
+    "logout": "Cerrar sesión",
+    "register": "Crear Cuenta"
+  },
+  "auth": {
+    "loginTitle": "Iniciar Sesión",
+    "loginSubtitle": "Continúa tu análisis de mercado",
+    "registerTitle": "Crear Cuenta",
+    "registerSubtitle": "Empieza tu análisis de mercado",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "signIn": "Iniciar sesión",
+    "signingIn": "Entrando...",
+    "signUp": "Crear cuenta",
+    "signingUp": "Creando cuenta...",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes cuenta?",
+    "registerHere": "Regístrate aquí",
+    "alreadyAccount": "¿Ya tienes cuenta?",
+    "loginHere": "Inicia sesión aquí"
   },
   "home": {
     "title": "Scanner ATH",

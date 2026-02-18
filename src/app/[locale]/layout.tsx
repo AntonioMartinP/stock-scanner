@@ -3,6 +3,8 @@ import {getMessages} from 'next-intl/server';
 import {notFound} from 'next/navigation';
 import {routing} from '@/i18n/routing';
 import Navbar from '@/components/layout/Navbar';
+import { AuthProvider } from '@/context/AuthContext';
+import { AuthCookieSyncClient } from '@/components/auth/AuthCookieSyncClient';
 import '@/app/globals.css';
 import type { Metadata } from 'next';
 
@@ -38,10 +40,13 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body className="relative bg-gray-50 text-gray-900">
         <NextIntlClientProvider messages={messages}>
-          <Navbar />
-          <main className="min-h-[calc(100vh-4rem)]">
-            {children}
-          </main>
+          <AuthProvider>
+            <AuthCookieSyncClient />
+            <Navbar />
+            <main className="min-h-[calc(100vh-4rem)]">
+              {children}
+            </main>
+          </AuthProvider>
         </NextIntlClientProvider>
       </body>
     </html>

@@ -1,7 +1,28 @@
 {
   "nav": {
     "home": "Home",
-    "scanner": "Scanner"
+    "scanner": "Scanner",
+    "login": "Sign in",
+    "logout": "Sign out",
+    "register": "Create Account"
+  },
+  "auth": {
+    "loginTitle": "Sign In",
+    "loginSubtitle": "Continue your market analysis",
+    "registerTitle": "Create Account",
+    "registerSubtitle": "Start your market analysis",
+    "email": "Email address",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "signIn": "Sign in",
+    "signingIn": "Signing in...",
+    "signUp": "Create account",
+    "signingUp": "Creating account...",
+    "forgotPassword": "Forgot your password?",
+    "noAccount": "Don't have an account?",
+    "registerHere": "Register here",
+    "alreadyAccount": "Already have an account?",
+    "loginHere": "Sign in here"
   },
   "home": {
     "title": "ATH Scanner",
