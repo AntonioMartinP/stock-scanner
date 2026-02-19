@@ -36,7 +36,7 @@ export const ibexToYahooSymbol: Record<string, string> = {
   CLNX: "CLNX.MC",
   MRL: "MRL.MC",
   MEL: "MEL.MC",
-  REE: "REE.MC",
+  RED: "RED.MC",
   SAB: "SAB.MC",
   SCYR: "SCYR.MC",
   SLR: "SLR.MC",

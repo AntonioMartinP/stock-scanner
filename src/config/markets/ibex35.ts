@@ -26,7 +26,7 @@ export const ibex35Stocks: Stock[] = [
   {marketId: IBEX35_MARKET_ID, ticker: "CLNX", name: "Cellnex", tradingViewSymbol: "BME:CLNX"},
   {marketId: IBEX35_MARKET_ID, ticker: "MRL", name: "Merlin Properties", tradingViewSymbol: "BME:MRL"},
   {marketId: IBEX35_MARKET_ID, ticker: "MEL", name: "Meliá Hotels", tradingViewSymbol: "BME:MEL"},
-  {marketId: IBEX35_MARKET_ID, ticker: "REE", name: "Red Eléctrica", tradingViewSymbol: "BME:REE"},
+  {marketId: IBEX35_MARKET_ID, ticker: "RED", name: "Redeia", tradingViewSymbol: "BME:RED"},
   {marketId: IBEX35_MARKET_ID, ticker: "SAB", name: "Sabadell", tradingViewSymbol: "BME:SAB"},
   {marketId: IBEX35_MARKET_ID, ticker: "SCYR", name: "Sacyr", tradingViewSymbol: "BME:SCYR"},
   {marketId: IBEX35_MARKET_ID, ticker: "SLR", name: "Solaria", tradingViewSymbol: "BME:SLR"},

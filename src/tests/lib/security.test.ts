@@ -75,5 +75,51 @@ describe("sanitizeSymbol", () => {
     it("blocks ticker part exceeding 20 chars", () => {
       expect(sanitizeSymbol("BME:TOOLONGTICKERVALUE12345")).toBe("");
     });
+    it("blocks multiple colon separators", () => {
+      expect(sanitizeSymbol("BME:SAN:EXTRA")).toBe("");
+    });
+    it("blocks newline injection", () => {
+      expect(sanitizeSymbol("BME:\nSAN")).toBe("");
+    });
+    it("blocks null byte injection", () => {
+      expect(sanitizeSymbol("BME:\0SAN")).toBe("");
+    });
+    it("blocks path traversal attempt", () => {
+      expect(sanitizeSymbol("../etc/passwd")).toBe("");
+    });
+    it("blocks SQL injection attempt", () => {
+      expect(sanitizeSymbol("'; DROP TABLE stocks;--")).toBe("");
+    });
+    it("blocks whitespace-only string", () => {
+      expect(sanitizeSymbol("   ")).toBe("");
+    });
+  });
+
+  // ── Símbolos límite permitidos ────────────────────────────
+  describe("boundary valid symbols", () => {
+    it("allows symbol with hyphen in ticker (e.g. BRK-B)", () => {
+      expect(sanitizeSymbol("NYSE:BRK-B")).toBe("NYSE:BRK-B");
+    });
+    it("allows symbol with dot in ticker (e.g. BRK.B)", () => {
+      expect(sanitizeSymbol("NYSE:BRK.B")).toBe("NYSE:BRK.B");
+    });
+    it("allows numeric-only ticker part", () => {
+      expect(sanitizeSymbol("HKEX:700")).toBe("HKEX:700");
+    });
+    it("allows exchange part at max length (12 chars)", () => {
+      expect(sanitizeSymbol("ABCDEFGHIJKL:SAN")).toBe("ABCDEFGHIJKL:SAN");
+    });
+    it("allows ticker part within max length (18 chars)", () => {
+      expect(sanitizeSymbol("BME:ABCDEFGHIJKLMNOPQR")).toBe("BME:ABCDEFGHIJKLMNOPQR"); // 18 chars → allowed
+    });
+    it("blocks ticker part exceeding max length (21 chars)", () => {
+      expect(sanitizeSymbol("BME:ABCDEFGHIJKLMNOPQRSTU")).toBe(""); // 21 chars → blocked
+    });
+    it("returns empty string — never throws — on any input", () => {
+      const dangerous = [null as unknown as string, undefined as unknown as string, 0 as unknown as string];
+      for (const input of dangerous) {
+        expect(() => sanitizeSymbol(input)).not.toThrow();
+      }
+    });
   });
 });
