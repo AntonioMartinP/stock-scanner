@@ -1,5 +1,5 @@
 import {NextIntlClientProvider} from 'next-intl';
-import {getMessages} from 'next-intl/server';
+import {getMessages, getTranslations} from 'next-intl/server';
 import {notFound} from 'next/navigation';
 import {routing} from '@/i18n/routing';
 import Navbar from '@/components/layout/Navbar';
@@ -35,17 +35,23 @@ export default async function LocaleLayout({
   }
 
   const messages = await getMessages();
+  const tFooter = await getTranslations({locale, namespace: 'footer'});
 
   return (
     <html lang={locale}>
-      <body className="relative bg-gray-50 text-gray-900">
+      <body className="relative bg-gray-50 text-gray-900 flex flex-col min-h-screen">
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
             <AuthCookieSyncClient />
             <Navbar />
-            <main className="min-h-[calc(100vh-4rem)]">
+            <main className="flex-1">
               {children}
             </main>
+            <footer className="border-t border-gray-200 bg-white py-4">
+              <p className="text-center text-xs text-gray-400">
+                {tFooter('disclaimer')}
+              </p>
+            </footer>
           </AuthProvider>
         </NextIntlClientProvider>
       </body>

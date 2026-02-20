@@ -6,6 +6,7 @@ import { useTranslations }     from 'next-intl';
 import { useLocale }           from 'next-intl';
 import { Link }                from '@/i18n/routing';
 import { useAuth }             from '@/context/AuthContext';
+import { auth }                from '@/lib/firebase/config';
 
 export default function LoginPage() {
   const { login, error } = useAuth();
@@ -22,7 +23,21 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       await login(email, password);
-      router.push(`/${locale}/scanner`);
+
+      // Write the auth-session cookie immediately so the proxy middleware
+      // finds it when we redirect — without this the middleware sees no
+      // cookie and bounces the user back to /login.
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const token = await currentUser.getIdToken();
+        document.cookie = `auth-session=${token}; path=/; SameSite=Strict; max-age=3600`;
+      }
+
+      // Honour ?from= redirect if present, otherwise go to scanner
+      const params   = new URLSearchParams(window.location.search);
+      const from     = params.get('from');
+      const dest     = from && from.startsWith('/') ? from : `/${locale}/scanner`;
+      router.push(dest);
     } catch {
       // Error is already available via AuthContext.error
     } finally {
@@ -69,7 +84,7 @@ export default function LoginPage() {
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="block text-sm font-medium text-black-700">
                 {t('email')}
               </label>
               <input
@@ -91,7 +106,7 @@ export default function LoginPage() {
             {/* Password + forgot */}
             <div>
               <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="password" className="block text-sm font-medium text-black-700">
                   {t('password')}
                 </label>
                 <Link

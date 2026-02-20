@@ -27,7 +27,23 @@
   "home": {
     "title": "ATH Scanner",
     "subtitle": "All-time highs dashboard",
-    "goToScanner": "Go to scanner"
+    "goToScanner": "Go to scanner",
+    "salesTitle": "Detect stock market opportunities in seconds.",
+    "salesSubtitle": "StockScanner analyses the market for you and detects stocks with upside potential.",
+    "problemTitle": "The problem",
+    "problem1": "Analysing the market manually takes time.",
+    "problem2": "Reviewing hundreds of stocks every day is not efficient.",
+    "problem3": "Many opportunities go unnoticed.",
+    "solutionTitle": "The solution",
+    "solutionText": "Our scanner automatically filters the market and shows you stocks with bullish momentum.",
+    "designedFor": "Designed for:",
+    "for1": "Intraday traders",
+    "for2": "Swing traders",
+    "for3": "Active investors",
+    "for4": "People who want to optimise their market analysis"
+  },
+  "footer": {
+    "disclaimer": "This tool is for informational purposes only and does not constitute financial advice."
   },
   "scanner": {
     "title": "Scanner",

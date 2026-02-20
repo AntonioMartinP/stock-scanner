@@ -27,7 +27,23 @@
   "home": {
     "title": "Scanner ATH",
     "subtitle": "Dashboard de máximos históricos",
-    "goToScanner": "Ir al scanner"
+    "goToScanner": "Ir al scanner",
+    "salesTitle": "Detecta oportunidades en bolsa en segundos.",
+    "salesSubtitle": "StockScanner analiza el mercado por ti y detecta acciones con potencial alcista.",
+    "problemTitle": "El problema",
+    "problem1": "Analizar el mercado manualmente lleva tiempo.",
+    "problem2": "Revisar cientos de acciones cada día no es eficiente.",
+    "problem3": "Muchas oportunidades pasan desapercibidas.",
+    "solutionTitle": "La solución",
+    "solutionText": "Nuestro escáner filtra automáticamente el mercado y te muestra las acciones con momentum alcista.",
+    "designedFor": "Diseñado para:",
+    "for1": "Traders intradía",
+    "for2": "Swing traders",
+    "for3": "Inversores activos",
+    "for4": "Personas que quieren optimizar su análisis de mercado"
+  },
+  "footer": {
+    "disclaimer": "Esta herramienta es solo informativa y no constituye asesoramiento financiero."
   },
   "scanner": {
     "title": "Scanner",
