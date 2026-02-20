@@ -39,7 +39,7 @@ export default function LoginPage() {
       const dest     = from && from.startsWith('/') ? from : `/${locale}/scanner`;
       router.push(dest);
     } catch {
-      // Error is already available via AuthContext.error
+      // Error is already available via AuthContext.error.
     } finally {
       setSubmitting(false);
     }
