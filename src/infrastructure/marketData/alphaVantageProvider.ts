@@ -73,7 +73,14 @@ export const alphaVantageProvider: MarketDataProvider = {
 
     const series = data?.["Time Series (Daily)"];
     if (!series) {
-      throw new Error("Alpha Vantage: unexpected response format");
+      if (Object.keys(data || {}).length === 0 || data?.["Error Message"]) {
+        // Sometimes Alpha Vantage returns {} or a generic Error Message when limits are hit
+        throw new ProviderRateLimitError(
+          "alphavantage",
+          "Alpha Vantage rate limit reached or invalid response. Please try again later."
+        );
+      }
+      throw new Error(`Alpha Vantage: unexpected response format: ${JSON.stringify(data).substring(0, 100)}`);
     }
 
     const candles: Candle[] = Object.entries(series).map(([date, ohlc]: any) => ({

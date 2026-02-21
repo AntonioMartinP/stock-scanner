@@ -33,11 +33,11 @@ export async function GET(req: Request) {
       fallbackInfo: output.fallbackInfo
     });
   } catch (error) {
-    if (error instanceof ProviderRateLimitError) {
+    if (error && typeof error === "object" && "name" in error && (error as Error).name === "ProviderRateLimitError") {
       return Response.json(
         {
-          error: error.message,
-          provider: error.providerId,
+          error: (error as any).message,
+          provider: (error as any).providerId,
           type: "RATE_LIMIT"
         },
         { status: 429 }
