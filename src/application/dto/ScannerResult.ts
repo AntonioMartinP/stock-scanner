@@ -12,6 +12,7 @@ export type ScannerResult = {
   distancePct: number;
   isNewAth: boolean;
   isNearAth: boolean;
+  dataSource?: string;
 };
 
 /**

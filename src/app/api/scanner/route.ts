@@ -22,13 +22,16 @@ export async function GET(req: Request) {
   }
 
   try {
-    const data = await runScanner({
+    const output = await runScanner({
       marketId: parsed.data.market,
       source: parsed.data.source,
       mode: parsed.data.mode
     });
 
-    return Response.json({ data });
+    return Response.json({
+      data: output.results,
+      fallbackInfo: output.fallbackInfo
+    });
   } catch (error) {
     if (error instanceof ProviderRateLimitError) {
       return Response.json(

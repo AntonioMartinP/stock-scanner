@@ -1,6 +1,6 @@
 # Stock Scanner — Detección de acciones cercanas a máximos históricos
 
-> **TFM — Máster en Desarrollo Web Full Stack con IA**  
+> **TFM — Máster en Desarrollo con IA**  
 > Autor: Antonio Martín P. · Febrero 2026  
 > Repositorio: [github.com/AntonioMartinP/stock-scanner](https://github.com/AntonioMartinP/stock-scanner)
 
@@ -12,7 +12,7 @@
 
 ### Problema que resuelve
 
-Identificar oportunidades técnicas en un mercado con decenas de valores requiere revisar gráfico por gráfico. Stock Scanner centraliza ese proceso: en una sola pantalla muestra todos los valores del índice seleccionado ordenados por su distancia al ATH, permitiendo priorizar el análisis en segundos.
+Identificar oportunidades técnicas en un mercado con cientos de valores que requieren revision gráfico por gráfico. Stock Scanner centraliza ese proceso: en una sola pantalla muestra todos los valores del índice seleccionado ordenados por su distancia al ATH, permitiendo realizar el análisis en segundos.
 
 ### Qué hace la aplicación
 
@@ -47,8 +47,8 @@ Identificar oportunidades técnicas en un mercado con decenas de valores requier
 | `source` | Implementación | Estado |
 |---|---|---|
 | `yahoo` | `yahooProvider.ts` | Activo. Funcionamiento 100% OK |
-| `alphavantage` | `alphaVantageProvider.ts` | Activo. Sin datos debido a acceso a API de pago |
-| `stooq` | `mockProvider.ts` | Activo. Mock (datos demo) |
+| `alphavantage` | `alphaVantageProvider.ts` | Sin datos porque va con API de pago |
+| `stooq` | `mockProvider.ts` | Activo. Simulado. Mock (datos demo) |
 
 ---
 

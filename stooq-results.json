@@ -1,0 +1,74 @@
+[
+  {
+    "symbol": "SAN.MC",
+    "status": 200,
+    "lines": 1,
+    "data": "No data"
+  },
+  {
+    "symbol": "SAN.ES",
+    "status": 200,
+    "lines": 1,
+    "data": "No data"
+  },
+  {
+    "symbol": "SAN.SM",
+    "status": 200,
+    "lines": 1,
+    "data": "No data"
+  },
+  {
+    "symbol": "SAN",
+    "status": 200,
+    "lines": 6263,
+    "data": "Date,Open,High,Low,Close,Volume\r\n2000-01-03,18.360"
+  },
+  {
+    "symbol": "SAN.F",
+    "status": 200,
+    "lines": 1,
+    "data": ""
+  },
+  {
+    "symbol": "SAP.DE",
+    "status": 200,
+    "lines": 4854,
+    "data": "Date,Open,High,Low,Close,Volume\r\n2007-01-02,32.742"
+  },
+  {
+    "symbol": "SAP.F",
+    "status": 200,
+    "lines": 1,
+    "data": ""
+  },
+  {
+    "symbol": "SAP",
+    "status": 200,
+    "lines": 1,
+    "data": "No data"
+  },
+  {
+    "symbol": "ENI.IT",
+    "status": 200,
+    "lines": 1,
+    "data": "No data"
+  },
+  {
+    "symbol": "ENI.MI",
+    "status": 200,
+    "lines": 1,
+    "data": "No data"
+  },
+  {
+    "symbol": "ENI.F",
+    "status": 200,
+    "lines": 1,
+    "data": ""
+  },
+  {
+    "symbol": "ENI",
+    "status": 200,
+    "lines": 4469,
+    "data": "Date,Open,High,Low,Close,Volume\r\n2007-09-25,14.75,"
+  }
+]

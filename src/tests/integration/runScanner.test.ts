@@ -20,7 +20,11 @@ function makeProvider(candles: typeof ascendingCandles | null, rejectWith?: stri
   const getDailyHistory = rejectWith
     ? vi.fn().mockRejectedValue(new Error(rejectWith))
     : vi.fn().mockResolvedValue(candles);
-  return { id: 'mock', getDailyHistory };
+  return { 
+    id: 'mock', 
+    getDailyHistory,
+    getFallbackTickers: vi.fn().mockReturnValue([]) // Add mock for fallback tracker
+  };
 }
 
 describe('runScanner Integration', () => {
@@ -31,18 +35,19 @@ describe('runScanner Integration', () => {
     it("returns results for every stock in a known market", async () => {
       getProviderMock.mockReturnValue(makeProvider(ascendingCandles));
 
-      const results = await runScanner({ marketId: 'ibex35', source: 'yahoo', mode: 'ath_real' });
+      const output = await runScanner({ marketId: 'ibex35', source: 'yahoo', mode: 'ath_real' });
 
-      expect(getProviderMock).toHaveBeenCalledWith('yahoo');
-      expect(results.length).toBeGreaterThan(0);
+      expect(getProviderMock).toHaveBeenCalledWith('yahoo', 'ibex35');
+      expect(output.results.length).toBeGreaterThan(0);
+      expect(output.fallbackInfo.tickers).toEqual([]);
     });
 
     it("computes isNewAth=true when last candle beats all previous highs", async () => {
       getProviderMock.mockReturnValue(makeProvider(ascendingCandles));
 
-      const results = await runScanner({ marketId: 'ibex35', source: 'yahoo', mode: 'ath_real' });
+      const output = await runScanner({ marketId: 'ibex35', source: 'yahoo', mode: 'ath_real' });
 
-      const first = results[0];
+      const first = output.results[0];
       expect(first.isNewAth).toBe(true);
       expect(first.ath).toBe(25);
       expect(first.currentHigh).toBe(25);
@@ -51,9 +56,9 @@ describe('runScanner Integration', () => {
     it("result rows contain required ScannerResult fields", async () => {
       getProviderMock.mockReturnValue(makeProvider(ascendingCandles));
 
-      const results = await runScanner({ marketId: 'ibex35', source: 'yahoo', mode: 'ath_real' });
+      const output = await runScanner({ marketId: 'ibex35', source: 'yahoo', mode: 'ath_real' });
 
-      const row = results[0];
+      const row = output.results[0];
       expect(row).toHaveProperty('ticker');
       expect(row).toHaveProperty('name');
       expect(row).toHaveProperty('tradingViewSymbol');
@@ -61,6 +66,7 @@ describe('runScanner Integration', () => {
       expect(row).toHaveProperty('distancePct');
       expect(row).toHaveProperty('isNewAth');
       expect(row).toHaveProperty('isNearAth');
+      expect(row).toHaveProperty('dataSource');
     });
   });
 
@@ -78,7 +84,7 @@ describe('runScanner Integration', () => {
       // Provider always throws — all stocks fail
       getProviderMock.mockReturnValue(makeProvider(null, 'Network error'));
 
-      const results = await runScanner({ marketId: 'ibex35', source: 'yahoo', mode: 'ath_real' });
+      const { results } = await runScanner({ marketId: 'ibex35', source: 'yahoo', mode: 'ath_real' });
 
       // Should return empty array, not throw
       expect(results).toEqual([]);
@@ -87,7 +93,7 @@ describe('runScanner Integration', () => {
     it("silently skips stocks that return empty candle arrays", async () => {
       getProviderMock.mockReturnValue(makeProvider([]));
 
-      const results = await runScanner({ marketId: 'ibex35', source: 'yahoo', mode: 'ath_real' });
+      const { results } = await runScanner({ marketId: 'ibex35', source: 'yahoo', mode: 'ath_real' });
 
       expect(results).toEqual([]);
     });
@@ -97,7 +103,7 @@ describe('runScanner Integration', () => {
       const singleCandle = [{ date: "2024-01-01", open: 10, high: 15, low: 9, close: 14, volume: 1 }];
       getProviderMock.mockReturnValue(makeProvider(singleCandle as any));
 
-      const results = await runScanner({ marketId: 'ibex35', source: 'yahoo', mode: 'ath_real' });
+      const { results } = await runScanner({ marketId: 'ibex35', source: 'yahoo', mode: 'ath_real' });
 
       expect(results.every(r => r.ath !== 0)).toBe(true);
     });
@@ -108,7 +114,7 @@ describe('runScanner Integration', () => {
     it("passes ath_52w mode through to computeAth without throwing", async () => {
       getProviderMock.mockReturnValue(makeProvider(ascendingCandles));
 
-      const results = await runScanner({ marketId: 'ibex35', source: 'yahoo', mode: 'ath_52w' });
+      const { results } = await runScanner({ marketId: 'ibex35', source: 'yahoo', mode: 'ath_52w' });
 
       expect(results.length).toBeGreaterThan(0);
     });

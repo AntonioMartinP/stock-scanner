@@ -18,6 +18,7 @@ export default function ScannerPage() {
   const [mode, setMode] = useState<AthMode>("ath_real");
 
   const [rows, setRows] = useState<ScannerRow[]>([]);
+  const [fallbackTickers, setFallbackTickers] = useState<string[]>([]);
   const [selected, setSelected] = useState<ScannerRow | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -36,17 +37,18 @@ export default function ScannerPage() {
     }
   }, [selected]);
 
-  const [markets, setMarkets] = useState<Array<{id: string; label: string}>>([{id: "ibex35", label: "IBEX 35"}]);
+  const [markets, setMarkets] = useState<Array<{ id: string; label: string }>>([{ id: "ibex35", label: "IBEX 35" }]);
 
   useEffect(() => {
     fetch("/api/markets")
       .then(r => r.json())
       .then(p => setMarkets((p.data ?? []).map((m: { id: string }) => ({ id: m.id, label: t(`markets.${m.id}` as Parameters<typeof t>[0]) }))))
-      .catch(() => {});
+      .catch(() => { });
   }, [t]);
 
   const fetchData = useCallback(() => {
     setErrorMsg(null);
+    setFallbackTickers([]);
     setIsRefreshing(true);
 
     fetch(`/api/scanner?market=${marketId}&source=${source}&mode=${mode}`)
@@ -56,6 +58,7 @@ export default function ScannerPage() {
         if (!res.ok) {
           setRows([]);
           setSelected(null);
+          setFallbackTickers([]);
           setErrorMsg(payload?.error ?? t("errors.unexpected"));
           return;
         }
@@ -67,10 +70,11 @@ export default function ScannerPage() {
         }));
 
         setRows(rowsWithTimestamp);
+        setFallbackTickers(payload.fallbackInfo?.tickers ?? []);
       })
       .catch(() => setErrorMsg(t("errors.network")))
       .finally(() => setIsRefreshing(false));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [marketId, source, mode]);
 
   useEffect(() => {
@@ -104,6 +108,15 @@ export default function ScannerPage() {
         {errorMsg && (
           <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
             {errorMsg}
+          </div>
+        )}
+
+        {/* Info banner for Stooq fallback */}
+        {fallbackTickers.length > 0 && source === "stooq" && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            <strong className="font-semibold block mb-1">Nota sobre proveedor de datos:</strong>
+            Stooq no disponía de datos actualizados para {fallbackTickers.length} acción(es).
+            Se han obtenido temporalmente desde Yahoo Finance para: <span className="font-mono text-xs">{fallbackTickers.join(", ")}</span>.
           </div>
         )}
 

@@ -11,6 +11,24 @@ function mustGetEnv(name: string): string {
   return v;
 }
 
+let requestQueue = Promise.resolve();
+
+function enqueueRequest<T>(task: () => Promise<T>): Promise<T> {
+  const result = requestQueue.then(async () => {
+    try {
+      return await task();
+    } finally {
+      // 1.5 second delay to avoid rate limiting blocks from concurrent/frequent requests
+      await new Promise(resolve => setTimeout(resolve, 1500));
+    }
+  });
+
+  // Catch errors so the queue itself doesn't become rejected
+  requestQueue = result.catch(() => {}) as Promise<void>;
+  
+  return result;
+}
+
 export const alphaVantageProvider: MarketDataProvider = {
   id: "alphavantage",
 
@@ -40,15 +58,18 @@ export const alphaVantageProvider: MarketDataProvider = {
       `&symbol=${encodeURIComponent(symbol)}` +
       `&outputsize=full&apikey=${encodeURIComponent(apiKey)}`;
 
-    const res = await fetch(url, { cache: "no-store" });
-    const data = await res.json();
+    const data = await enqueueRequest(async () => {
+      const res = await fetch(url, { cache: "no-store" });
+      const json = await res.json();
 
-    if (data?.Note || data?.Information) {
-      throw new ProviderRateLimitError(
-        "alphavantage",
-        "Alpha Vantage rate limit reached. Please try again later."
-      );
-    }
+      if (json?.Note || json?.Information) {
+        throw new ProviderRateLimitError(
+          "alphavantage",
+          "Alpha Vantage rate limit reached. Please try again later."
+        );
+      }
+      return json;
+    });
 
     const series = data?.["Time Series (Daily)"];
     if (!series) {
