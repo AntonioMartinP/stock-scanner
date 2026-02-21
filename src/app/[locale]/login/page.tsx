@@ -1,21 +1,20 @@
 "use client";
 
 import { useState, FormEvent } from 'react';
-import { useRouter }           from 'next/navigation';
-import { useTranslations }     from 'next-intl';
-import { useLocale }           from 'next-intl';
-import { Link }                from '@/i18n/routing';
-import { useAuth }             from '@/context/AuthContext';
-import { auth }                from '@/lib/firebase/config';
+import { useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
+import { Link, useRouter } from '@/i18n/routing';
+import { useAuth } from '@/context/AuthContext';
+import { auth } from '@/lib/firebase/config';
 
 export default function LoginPage() {
   const { login, error } = useAuth();
-  const router           = useRouter();
-  const locale           = useLocale();
-  const t                = useTranslations('auth');
+  const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations('auth');
 
-  const [email,      setEmail]      = useState('');
-  const [password,   setPassword]   = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
@@ -33,11 +32,8 @@ export default function LoginPage() {
         document.cookie = `auth-session=${token}; path=/; SameSite=Strict; max-age=3600`;
       }
 
-      // Honour ?from= redirect if present, otherwise go to scanner
-      const params   = new URLSearchParams(window.location.search);
-      const from     = params.get('from');
-      const dest     = from && from.startsWith('/') ? from : `/${locale}/scanner`;
-      router.push(dest);
+      // Always go to the scanner page after successful login
+      router.push('/scanner');
     } catch {
       // Error is already available via AuthContext.error.
     } finally {
