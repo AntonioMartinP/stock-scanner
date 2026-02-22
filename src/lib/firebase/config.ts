@@ -18,7 +18,12 @@ const REQUIRED_ENV_VARS = [
 const missing = REQUIRED_ENV_VARS.filter(key => !process.env[key]);
 if (missing.length > 0) {
   const msg = `[Firebase] Missing required environment variables:\n  ${missing.join('\n  ')}\nSet them in .env.local (dev) or your deployment environment (prod).`;
-  if (process.env.NODE_ENV === 'production') {
+
+  // Only throw on the server side (Node.js / build time).
+  // In the browser the Firebase SDK will surface its own errors when methods
+  // are actually called — a hard throw here crashes the entire client bundle.
+  const isServer = typeof window === 'undefined';
+  if (isServer && process.env.NODE_ENV === 'production') {
     throw new Error(msg);
   } else {
     console.warn(msg);

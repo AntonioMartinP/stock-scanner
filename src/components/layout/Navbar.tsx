@@ -58,8 +58,9 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Nav Links — centered, desktop only */}
-          <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 space-x-8">
+          {/* Nav Links — centered, visible only at lg+ (≥1024px).
+              Uses absolute centering so it never pushes logo or right-side items. */}
+          <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 space-x-8">
             <Link
               href="/"
               className={`text-lg font-medium transition-colors hover:text-blue-600 ${
@@ -81,8 +82,8 @@ export default function Navbar() {
           {/* Right side */}
           <div className="flex items-center gap-3">
 
-            {/* Desktop: user info + auth buttons + language */}
-            <div className="hidden md:flex items-center gap-4">
+            {/* Desktop (lg+): user info + auth buttons + language switcher */}
+            <div className="hidden lg:flex items-center gap-4">
               {loading && <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200" />}
 
               {!loading && user && (
@@ -127,10 +128,10 @@ export default function Navbar() {
               <LanguageSwitcher />
             </div>
 
-            {/* Mobile: hamburger / close button */}
+            {/* Mobile / tablet (< lg): hamburger / close button */}
             <button
               onClick={() => setMenuOpen(o => !o)}
-              className="md:hidden flex h-10 w-10 items-center justify-center rounded-lg
+              className="lg:hidden flex h-10 w-10 items-center justify-center rounded-lg
                          text-gray-600 hover:bg-gray-100 transition"
               aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
             >
@@ -151,10 +152,10 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile menu — full-screen panel */}
+      {/* Mobile / tablet menu — full-screen panel, hidden at lg+ */}
       <div
         className={`fixed top-16 left-0 right-0 bottom-0 z-50 bg-white flex flex-col
-                    transition-all duration-200 ease-out origin-top md:hidden overflow-y-auto
+                    transition-all duration-200 ease-out origin-top lg:hidden overflow-y-auto
                     ${menuOpen ? 'opacity-100 scale-y-100 pointer-events-auto' : 'opacity-0 scale-y-0 pointer-events-none'}`}
       >
         {/* Nav links */}
