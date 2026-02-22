@@ -39,7 +39,8 @@ Identificar oportunidades técnicas en un mercado con cientos de valores que req
 | Validación | Zod | ^4.3.6 |
 | Tests | Vitest | ^4.0.18 |
 | Test utilities | Testing Library (React + DOM) | ^16 / ^10 |
-| Linting | ESLint + eslint-config-next | ^10 |
+| Linting | ESLint | ^10 |
+| Linting config | eslint-config-next | ^0.2.4 |
 | Compilador React | React Compiler (Babel plugin) | 1.0.0 |
 
 ### Proveedores de datos configurables
@@ -48,7 +49,7 @@ Identificar oportunidades técnicas en un mercado con cientos de valores que req
 |---|---|---|
 | `yahoo` | `yahooProvider.ts` | Activo. Funcionamiento 100% OK |
 | `alphavantage` | `alphaVantageProvider.ts` | Sin datos porque va con API de pago |
-| `stooq` | `mockProvider.ts` | Activo. Simulado. Mock (datos demo) |
+| `stooq` | `stooqProvider.ts` | Activo. Implementación real (CSV). Usa `FallbackProvider` → Yahoo para índices europeos |
 
 ---
 
@@ -56,7 +57,7 @@ Identificar oportunidades técnicas en un mercado con cientos de valores que req
 
 ### Requisitos previos
 
-- **Node.js** >= 20 LTS
+- **Node.js** >= 22 (ver `.nvmrc`)
 - **npm** >= 10 (incluido con Node.js)
 - Cuenta en [Firebase](https://firebase.google.com/) (para autenticación)
 - Clave de API de [Alpha Vantage](https://www.alphavantage.co/) (opcional, solo si `source=alphavantage`)
@@ -127,7 +128,21 @@ npm run lint
 
 ```
 stock-scanner/
+├── .github/
+│   └── workflows/ci.yml            # CI: lint + test + build en cada push/PR
+├── .nvmrc                           # Versión de Node.js fijada (22)
+├── eslint.config.mjs                # Configuración ESLint (Flat Config)
+├── postcss.config.mjs               # Configuración PostCSS para Tailwind
+├── next.config.ts                   # Configuración de Next.js (cabeceras, CSP, etc.)
+├── vitest.config.ts                 # Configuración de Vitest
+├── vitest.setup.ts                  # Setup global de tests (Testing Library matchers)
+├── tsconfig.json
+├── package.json
+├── docs/
+│   └── diagrams/system.mmd          # Diagrama Mermaid de arquitectura
+├── public/                          # Recursos estáticos (imágenes, etc.)
 ├── src/
+│   ├── proxy.ts                     # Middleware: protección de rutas + i18n (next-intl)
 │   ├── app/                         # App Router de Next.js
 │   │   ├── [locale]/                # Rutas internacionalizadas (es / en)
 │   │   │   ├── layout.tsx           # Layout raíz con providers
@@ -153,9 +168,10 @@ stock-scanner/
 │   │   └── marketData/
 │   │       ├── MarketDataProvider.ts    # Interfaz del proveedor (contrato)
 │   │       ├── providerFactory.ts       # Fábrica: selecciona proveedor por source
+│   │       ├── fallbackProvider.ts      # Proveedor compuesto: primario → secundario
 │   │       ├── yahooProvider.ts         # Proveedor Yahoo Finance
 │   │       ├── alphaVantageProvider.ts  # Proveedor Alpha Vantage
-│   │       ├── stooqProvider.ts         # Proveedor Stooq
+│   │       ├── stooqProvider.ts         # Proveedor Stooq (CSV real)
 │   │       ├── mockProvider.ts          # Proveedor mock para desarrollo y tests
 │   │       ├── errors.ts                # Errores tipados (ProviderRateLimitError, etc.)
 │   │       └── mappings/                # Mapeo ticker local → símbolo del proveedor
@@ -204,7 +220,6 @@ stock-scanner/
 │   │   ├── routing.ts               # Configuración de locales y prefijo de ruta
 │   │   └── request.ts               # Resolución del locale en el servidor
 │   │
-│   └── middleware.ts                # Protección de rutas + middleware i18n
 │
 ├── src/tests/
 │   ├── unit/computeAth.test.ts
@@ -214,11 +229,7 @@ stock-scanner/
 │   ├── integration/runScanner.test.ts
 │   └── lib/formatters.test.ts · security.test.ts
 │
-├── docs/diagrams/system.mmd        # Diagrama Mermaid de arquitectura
-├── next.config.ts
-├── tsconfig.json
-├── vitest.config.ts
-└── package.json
+└── package-lock.json
 ```
 
 ### Principios arquitectónicos aplicados
@@ -228,6 +239,7 @@ stock-scanner/
 | Separación de capas (SoC) | `domain` no importa nada de `infrastructure` ni de `app` |
 | Inversión de dependencias | `runScanner` depende de la interfaz `MarketDataProvider`, no de un proveedor concreto |
 | Proveedor intercambiable | `providerFactory` permite cambiar la fuente de datos sin tocar el caso de uso |
+| Tolerancia a proveedores | `FallbackProvider` intenta el proveedor primario y, si falla, recurre al secundario de forma transparente |
 | Validación en frontera | Parámetros de la API validados con Zod antes de llegar al dominio |
 | Seguridad defensiva | Símbolos saneados con regex antes de pasarlos al widget externo de TradingView |
 | Defensa en profundidad | Seguridad en capas: validación Zod + `sanitizeSymbol` + cabeceras HTTP CSP/HSTS/X-Frame |
@@ -393,6 +405,25 @@ npx vitest
 | `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | cliente + servidor | Sender ID de FCM |
 | `NEXT_PUBLIC_FIREBASE_APP_ID` | cliente + servidor | App ID de Firebase |
 | `ALPHA_VANTAGE_API_KEY` | solo servidor | Clave de Alpha Vantage |
+
+---
+
+## CI/CD y Deploy
+
+### Integración continua
+
+El proyecto incluye un workflow de GitHub Actions (`.github/workflows/ci.yml`) que se ejecuta en cada push a `master` y en cada Pull Request:
+
+```yaml
+Steps: npm ci → npm run lint → npm run test → npm run build
+```
+
+### Deploy
+
+La aplicación está desplegada en **Vercel** con integración continua desde la rama `master`.
+
+- Las variables de entorno de Firebase se configuran en el dashboard de Vercel.
+- El deploy se activa automáticamente en cada push a `master`.
 
 ---
 

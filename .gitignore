@@ -40,4 +40,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# temp / debug files
+test-stooq.js
+test-output.txt
+result.json
+stooq-results.json
+
 .vercel

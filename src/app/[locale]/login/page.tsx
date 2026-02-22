@@ -1,21 +1,28 @@
 "use client";
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { useLocale } from 'next-intl';
 import { Link, useRouter } from '@/i18n/routing';
 import { useAuth } from '@/context/AuthContext';
 import { auth } from '@/lib/firebase/config';
 
 export default function LoginPage() {
-  const { login, error } = useAuth();
+  const { login, error, user, loading } = useAuth();
   const router = useRouter();
-  const locale = useLocale();
   const t = useTranslations('auth');
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+  // Redirect already-authenticated users away from login
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace('/scanner');
+    }
+  }, [user, loading, router]);
+
+  if (loading || user) return null;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

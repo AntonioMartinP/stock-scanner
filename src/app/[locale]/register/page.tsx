@@ -1,28 +1,34 @@
 "use client";
 
-import { useState, FormEvent } from 'react';
-import { useRouter }           from 'next/navigation';
+import { useState, FormEvent, useEffect } from 'react';
 import { useTranslations }     from 'next-intl';
-import { useLocale }           from 'next-intl';
-import { Link }                from '@/i18n/routing';
+import { Link, useRouter }     from '@/i18n/routing';
 import { useAuth }             from '@/context/AuthContext';
 
 export default function RegisterPage() {
-  const { register, error } = useAuth();
+  const { register, error, user, loading } = useAuth();
   const router              = useRouter();
-  const locale              = useLocale();
   const t                   = useTranslations('auth');
 
   const [email,      setEmail]      = useState('');
   const [password,   setPassword]   = useState('');
   const [submitting, setSubmitting] = useState(false);
 
+  // Redirect already-authenticated users away from register
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace('/scanner');
+    }
+  }, [user, loading, router]);
+
+  if (loading || user) return null;
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     try {
       await register(email, password);
-      router.push(`/${locale}/scanner`);
+      router.push('/scanner');
     } catch {
       // Error is already available via AuthContext.error
     } finally {
