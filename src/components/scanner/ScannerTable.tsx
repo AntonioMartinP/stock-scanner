@@ -91,7 +91,7 @@ export default function ScannerTable({
             onChange={e => setSearch(e.target.value)}
             placeholder={t("controls.search")}
             className="h-9 w-full rounded-lg border border-gray-200 pl-9 pr-3 text-sm
-                       outline-none transition focus:border-blue-500 focus:ring-2
+                       text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2
                        focus:ring-blue-500/20"
           />
         </div>

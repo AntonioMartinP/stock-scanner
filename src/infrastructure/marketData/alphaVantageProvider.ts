@@ -1,5 +1,5 @@
 import type { Candle, MarketDataProvider } from "./MarketDataProvider";
-import { ProviderRateLimitError } from "./errors";
+import { ProviderRateLimitError, ProviderConfigError } from "./errors";
 import { marketDataCache } from "@/infrastructure/cache/memoryCache";
 import { ibexToAlphaVantageSymbol } from "./mappings/ibexMappings";
 import { daxToAlphaVantageSymbol } from "./mappings/daxMappings";
@@ -7,7 +7,10 @@ import { ftse_mib40ToAlphaVantageSymbol } from "./mappings/ftse_mibMappings";
 
 function mustGetEnv(name: string): string {
   const v = process.env[name];
-  if (!v) throw new Error(`Missing env var: ${name}`);
+  if (!v) throw new ProviderConfigError(
+    "alphavantage",
+    `Alpha Vantage API key is not configured. Set the ${name} environment variable.`
+  );
   return v;
 }
 

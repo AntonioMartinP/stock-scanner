@@ -50,7 +50,9 @@
     "loading": "Cargando...",
     "errors": {
       "unexpected": "Error inesperado.",
-      "network": "Error de red."
+      "network": "Error de red.",
+      "alphaVantageNoKey": "Alpha Vantage requiere clave de API de pago.",
+      "alphaVantageNoKeyDetail": "Esta fuente de datos solo devuelve resultados con una clave API activa (plan de pago). Configura ALPHA_VANTAGE_API_KEY en las variables de entorno o selecciona Yahoo Finance o Stooq como fuente."
     },
     "controls": {
       "market": "Mercado",

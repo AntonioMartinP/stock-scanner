@@ -2,6 +2,7 @@ import { markets } from "@/config/markets";
 import { getProvider, DataSource } from "@/infrastructure/marketData/providerFactory";
 import { computeAth, AthMode } from "@/domain/services/computeAth";
 import type { ScannerResult } from "@/application/dto/ScannerResult";
+import { ProviderConfigError } from "@/infrastructure/marketData/errors";
 
 // Type guard to check if provider has our fallback logging method
 function hasFallbackLog(provider: any): provider is { getFallbackTickers: () => string[] } {
@@ -51,7 +52,8 @@ export async function runScanner(input: {
           ...athResult
         };
       } catch (error) {
-        if (error && typeof error === "object" && "name" in error && error.name === "ProviderRateLimitError") {
+        if (error && typeof error === "object" && "name" in error &&
+           (error.name === "ProviderRateLimitError" || error.name === "ProviderConfigError")) {
           throw error;
         }
         console.error(`Error scanning ${stock.ticker}:`, error);

@@ -21,6 +21,7 @@ export default function ScannerPage() {
   const [fallbackTickers, setFallbackTickers] = useState<string[]>([]);
   const [selected, setSelected] = useState<ScannerRow | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [noApiKey, setNoApiKey] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [search, setSearch] = useState("");
@@ -48,7 +49,9 @@ export default function ScannerPage() {
 
   const fetchData = useCallback(() => {
     setErrorMsg(null);
+    setNoApiKey(false);
     setFallbackTickers([]);
+    setRows([]);
     setIsRefreshing(true);
 
     fetch(`/api/scanner?market=${marketId}&source=${source}&mode=${mode}`)
@@ -56,10 +59,13 @@ export default function ScannerPage() {
         const payload = await res.json();
 
         if (!res.ok) {
-          setRows([]);
+          if (payload?.type === "NO_API_KEY") {
+            setNoApiKey(true);
+          } else {
+            setErrorMsg(payload?.error ?? t("errors.unexpected"));
+          }
           setSelected(null);
           setFallbackTickers([]);
-          setErrorMsg(payload?.error ?? t("errors.unexpected"));
           return;
         }
 
@@ -117,6 +123,14 @@ export default function ScannerPage() {
             <strong className="font-semibold block mb-1">Nota sobre proveedor de datos:</strong>
             Stooq no disponía de datos actualizados para {fallbackTickers.length} acción(es).
             Se han obtenido temporalmente desde Yahoo Finance para: <span className="font-mono text-xs">{fallbackTickers.join(", ")}</span>.
+          </div>
+        )}
+
+        {/* Info banner for Alpha Vantage — requires paid API key */}
+        {noApiKey && (
+          <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+            <strong className="font-semibold block mb-1">{t("errors.alphaVantageNoKey" as Parameters<typeof t>[0])}</strong>
+            {t("errors.alphaVantageNoKeyDetail" as Parameters<typeof t>[0])}
           </div>
         )}
 

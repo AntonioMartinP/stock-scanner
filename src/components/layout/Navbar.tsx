@@ -1,6 +1,6 @@
 "use client";
 
-import { useState }                     from 'react';
+import { useState, useEffect }           from 'react';
 import { Link, usePathname, useRouter } from '@/i18n/routing';
 import { useTranslations }              from 'next-intl';
 import { useAuth }                      from '@/context/AuthContext';
@@ -23,6 +23,12 @@ export default function Navbar() {
 
   const closeMenu = () => setMenuOpen(false);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
+
   return (
     <>
       <nav className="border-b border-gray-200 bg-white sticky top-0 z-50 shadow-sm">
@@ -31,7 +37,7 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" onClick={closeMenu} className="flex items-center gap-2 transition-opacity hover:opacity-80">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-md">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-br from-blue-600 to-indigo-700 text-white shadow-md">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -85,7 +91,7 @@ export default function Navbar() {
                                   bg-blue-100 text-sm font-semibold text-blue-700">
                     {user.email?.[0].toUpperCase()}
                   </div>
-                  <span className="max-w-[160px] truncate text-sm text-gray-600">
+                  <span className="max-w-40 truncate text-sm text-gray-600">
                     {user.email}
                   </span>
                   <button
@@ -145,17 +151,9 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile dropdown — overlay */}
-      {menuOpen && (
-        <div
-          className="fixed inset-0 z-40 md:hidden"
-          onClick={closeMenu}
-        />
-      )}
-
-      {/* Mobile dropdown — full screen height */}
+      {/* Mobile menu — full-screen panel */}
       <div
-        className={`fixed top-[4rem] left-0 right-0 bottom-0 z-50 bg-white flex flex-col
+        className={`fixed top-16 left-0 right-0 bottom-0 z-50 bg-white flex flex-col
                     transition-all duration-200 ease-out origin-top md:hidden overflow-y-auto
                     ${menuOpen ? 'opacity-100 scale-y-100 pointer-events-auto' : 'opacity-0 scale-y-0 pointer-events-none'}`}
       >

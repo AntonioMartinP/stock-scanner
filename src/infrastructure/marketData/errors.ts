@@ -7,3 +7,13 @@ export class ProviderRateLimitError extends Error {
     this.providerId = providerId;
   }
 }
+
+export class ProviderConfigError extends Error {
+  readonly providerId: string;
+
+  constructor(providerId: string, message = "Provider not configured") {
+    super(message);
+    this.name = "ProviderConfigError";
+    this.providerId = providerId;
+  }
+}

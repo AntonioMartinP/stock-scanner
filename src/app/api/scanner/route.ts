@@ -1,5 +1,5 @@
 import { runScanner } from "@/application/usecases/runScanner";
-import { ProviderRateLimitError } from "@/infrastructure/marketData/errors";
+import { ProviderRateLimitError, ProviderConfigError } from "@/infrastructure/marketData/errors";
 import { scannerQuerySchema } from "@/lib/validation";
 
 export async function GET(req: Request) {
@@ -33,14 +33,17 @@ export async function GET(req: Request) {
       fallbackInfo: output.fallbackInfo
     });
   } catch (error) {
-    if (error && typeof error === "object" && "name" in error && (error as Error).name === "ProviderRateLimitError") {
+    if (error instanceof ProviderRateLimitError) {
       return Response.json(
-        {
-          error: (error as any).message,
-          provider: (error as any).providerId,
-          type: "RATE_LIMIT"
-        },
+        { error: error.message, provider: error.providerId, type: "RATE_LIMIT" },
         { status: 429 }
+      );
+    }
+
+    if (error instanceof ProviderConfigError) {
+      return Response.json(
+        { error: error.message, provider: error.providerId, type: "NO_API_KEY" },
+        { status: 422 }
       );
     }
 

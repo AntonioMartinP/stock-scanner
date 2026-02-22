@@ -37,7 +37,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-100 px-4">
+    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-linear-to-br from-blue-50 via-indigo-50 to-blue-100 px-4">
       <div className="w-full max-w-md">
 
         {/* Card */}
@@ -88,13 +88,13 @@ export default function RegisterPage() {
                 disabled={submitting}
                 placeholder="tu@email.com"
                 className="mt-1 block w-full rounded-lg border border-gray-300
-                           px-3 py-2.5 text-sm shadow-sm outline-none transition
+                           px-3 py-2.5 text-sm text-gray-900 shadow-sm outline-none transition
                            focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20
                            disabled:cursor-not-allowed disabled:opacity-50"
               />
             </div>
 
-            {/* Password */}
+            {/* Password */}}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 {t('password')}
@@ -109,13 +109,13 @@ export default function RegisterPage() {
                 disabled={submitting}
                 placeholder="••••••••"
                 className="mt-1 block w-full rounded-lg border border-gray-300
-                           px-3 py-2.5 text-sm shadow-sm outline-none transition
+                           px-3 py-2.5 text-sm text-gray-900 shadow-sm outline-none transition
                            focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20
                            disabled:cursor-not-allowed disabled:opacity-50"
               />
             </div>
 
-            {/* Submit */}
+            {/* Submit */}}
             <button
               type="submit"
               disabled={submitting}
