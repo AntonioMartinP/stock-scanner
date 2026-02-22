@@ -48,7 +48,7 @@ Identificar oportunidades técnicas en un mercado con cientos de valores que req
 | `source` | Implementación | Estado |
 |---|---|---|
 | `yahoo` | `yahooProvider.ts` | Activo. Funcionamiento 100% OK |
-| `alphavantage` | `alphaVantageProvider.ts` | Sin datos porque va con API de pago |
+| `alphavantage` | `alphaVantageProvider.ts` | Requiere API key de pago. La UI muestra aviso ⚠ y el backend devuelve HTTP 422 sin clave |
 | `stooq` | `stooqProvider.ts` | Activo. Implementación real (CSV). Usa `FallbackProvider` → Yahoo para índices europeos |
 
 ---
@@ -142,14 +142,18 @@ stock-scanner/
 │   └── diagrams/system.mmd          # Diagrama Mermaid de arquitectura
 ├── public/                          # Recursos estáticos (imágenes, etc.)
 ├── src/
-│   ├── proxy.ts                     # Middleware: protección de rutas + i18n (next-intl)
+│   ├── middleware.ts                # Middleware: protección de rutas + i18n (next-intl)
 │   ├── app/                         # App Router de Next.js
 │   │   ├── [locale]/                # Rutas internacionalizadas (es / en)
 │   │   │   ├── layout.tsx           # Layout raíz con providers
+│   │   │   ├── error.tsx            # Boundary global de errores (Client Component)
+│   │   │   ├── not-found.tsx        # Página 404 (ruta no encontrada)
 │   │   │   ├── page.tsx             # Página de inicio (pública)
 │   │   │   ├── login/page.tsx       # Autenticación con Firebase
 │   │   │   ├── register/page.tsx    # Registro de usuario
-│   │   │   └── scanner/page.tsx     # Vista principal del scanner (protegida)
+│   │   │   └── scanner/
+│   │   │       ├── page.tsx         # Vista principal del scanner (protegida)
+│   │   │       └── loading.tsx      # Skeleton de carga mientras se obtienen datos
 │   │   ├── api/
 │   │   │   ├── scanner/route.ts     # GET /api/scanner — ejecuta el análisis
 │   │   │   └── markets/route.ts     # GET /api/markets — devuelve los mercados disponibles
@@ -212,7 +216,8 @@ stock-scanner/
 │   │   ├── formatters.ts            # fmtMoney, fmtPct, fmtDateTimeFull, getDistanceStyle
 │   │   ├── security.ts              # sanitizeSymbol — previene XSS en widget externo
 │   │   ├── validation.ts            # Schemas Zod para validar inputs de la API
-│   │   └── firebase/config.ts       # Inicialización del SDK de Firebase
+│   │   ├── rateLimit.ts             # Rate-limiter en memoria (token bucket por IP)
+│   │   └── firebase/config.ts       # Inicialización del SDK de Firebase (+ validación de env vars)
 │   │
 │   ├── i18n/
 │   │   ├── en.json                  # Mensajes en inglés
@@ -244,6 +249,8 @@ stock-scanner/
 | Seguridad defensiva | Símbolos saneados con regex antes de pasarlos al widget externo de TradingView |
 | Defensa en profundidad | Seguridad en capas: validación Zod + `sanitizeSymbol` + cabeceras HTTP CSP/HSTS/X-Frame |
 | Tolerancia a fallos | `runScanner` usa `Promise.all` con `try/catch` por valor; un error no interrumpe el resto |
+| Rate limiting | `rateLimit.ts` limita peticiones por IP en `/api/scanner` (30/min) y `/api/markets` (60/min) |
+| Caché | `MemoryCache` con TTL 6h reduce llamadas a proveedores externos; en serverless resetea por instancia |
 
 ---
 

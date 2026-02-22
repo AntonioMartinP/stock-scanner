@@ -45,6 +45,17 @@
   "footer": {
     "disclaimer": "This tool is for informational purposes only and does not constitute financial advice."
   },
+  "errors": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. You can try again or return to the home page.",
+    "digest": "Error ID",
+    "retry": "Try again"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist or has been moved.",
+    "backHome": "Back to home"
+  },
   "scanner": {
     "title": "Scanner",
     "loading": "Loading...",
@@ -76,7 +87,8 @@
     "sources": {
       "stooq": "Stooq",
       "alphavantage": "Alpha Vantage",
-      "yahoo": "Yahoo Finance"
+      "alphavantageHint": "Requires a paid API key (ALPHA_VANTAGE_API_KEY). Switch to Yahoo or Stooq for free data.",
+      "yahoo": "Yahoo Finance (Data 100% ok)"
     },
     "table": {
       "ticker": "Ticker",

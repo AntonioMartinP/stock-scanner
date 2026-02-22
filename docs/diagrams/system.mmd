@@ -1,19 +1,50 @@
 graph TD
-  U[User] --> UI[Next.js Dashboard<br/>i18n: ES/EN]
-  UI --> API[/api/scanner/]
-  API --> UC[runScanner use case]
-  UC --> P{Provider Factory}
-  P -->|Yahoo Finance| YF[Yahoo Finance API<br/>yahoo-finance2]
-  P -->|Stooq| S[Stooq API CSV<br/>Mock fallback]
-  P -->|Alpha Vantage| AV[Alpha Vantage API JSON<br/>Rate limited]
-  UC --> Cache[Memory Cache<br/>6h TTL]
-  Cache --> ATH[computeAth<br/>uses HIGH field<br/>modes: ath_real / ath_52w]
-  ATH --> Results[Scanner Results]
+  U[User<br/>Browser] -->|GET /es/scanner| MW[middleware.ts<br/>Auth check + i18n<br/>next-intl]
+  MW -->|Unauthenticated| LoginPage[/locale/login]
+  MW -->|Authenticated| UI[Next.js Scanner Page<br/>i18n: ES / EN]
+
+  UI -->|GET /api/scanner| RL1[Rate Limiter<br/>30 req/min per IP]
+  UI -->|GET /api/markets| RL2[Rate Limiter<br/>60 req/min per IP]
+
+  RL1 -->|429 Too Many Requests| UI
+  RL2 -->|429 Too Many Requests| UI
+
+  RL1 --> Valid[Zod Validation<br/>scannerQuerySchema]
+  RL2 --> Markets[Markets Config<br/>ibex35 / dax40 / ftse_mib40]
+
+  Valid --> Cache[MemoryCache<br/>6h TTL<br/>⚠ per-instance in serverless]
+  Cache -->|cache hit| Results
+  Cache -->|cache miss| UC[runScanner<br/>use case]
+
+  UC --> PF{Provider Factory<br/>source param}
+  PF -->|yahoo| YF[Yahoo Finance API<br/>yahoo-finance2]
+  PF -->|stooq| FB[FallbackProvider<br/>Stooq CSV → Yahoo]
+  PF -->|alphavantage| AV[Alpha Vantage API<br/>⚠ Requires paid API key]
+
+  YF --> ATH[computeAth<br/>ath_real / ath_52w]
+  FB --> ATH
+  AV -->|No key → HTTP 422| UC
+
+  ATH --> Results[ScannerResult]
   Results --> UI
-  UI --> TV[TradingView Widget<br/>Real-time charts]
-  
+
+  UI -->|select row| TV[TradingView Widget<br/>sanitizeSymbol XSS guard]
+  UI -->|runtime error| ErrPage[error.tsx<br/>Global error boundary]
+  UI -->|route not found| NotFound[not-found.tsx<br/>404 page]
+  UI -->|loading| Loading[scanner/loading.tsx<br/>Skeleton UI]
+
+  subgraph Firebase Auth
+    LoginPage --> FB_AUTH[Firebase Auth SDK]
+    FB_AUTH -->|token| Cookie[auth-session cookie]
+    Cookie --> MW
+  end
+
   style YF fill:#90EE90
-  style S fill:#FFB6C1
+  style FB fill:#90EE90
   style AV fill:#FFD700
   style ATH fill:#87CEEB
   style Cache fill:#DDA0DD
+  style ErrPage fill:#FFB6C1
+  style NotFound fill:#FFB6C1
+  style RL1 fill:#FFA07A
+  style RL2 fill:#FFA07A

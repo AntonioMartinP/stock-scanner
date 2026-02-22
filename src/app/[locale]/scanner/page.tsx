@@ -88,11 +88,12 @@ export default function ScannerPage() {
   }, [fetchData]);
 
   return (
-    // Mobile: single scrollable column. Desktop: fixed-height two-column split.
-    <div className="flex flex-col md:flex-row md:h-[calc(100vh-4rem)] bg-gray-50">
+    // Mobile / tablet portrait+landscape: single scrollable column.
+    // Desktop (≥1024px): fixed-height two-column split.
+    <div className="flex flex-col lg:flex-row lg:h-[calc(100vh-4rem)] bg-gray-50">
 
       {/* Main column: controls + table */}
-      <div className="flex flex-col gap-4 p-4 md:p-6 w-full md:w-1/2 md:overflow-hidden">
+      <div className="flex flex-col gap-4 p-4 lg:p-6 w-full lg:w-1/2 lg:overflow-hidden">
 
         {/* Controls card */}
         <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
@@ -134,9 +135,9 @@ export default function ScannerPage() {
           </div>
         )}
 
-        {/* Table card: on mobile auto-height; on desktop fills remaining space */}
+        {/* Table card: on mobile/tablet auto-height; on desktop fills remaining space */}
         <div className="rounded-xl border border-gray-200 bg-white shadow-sm
-                        md:flex-1 md:overflow-hidden">
+                        lg:flex-1 lg:overflow-hidden">
           <ScannerTable
             rows={rows}
             onSelect={setSelected}
@@ -149,9 +150,9 @@ export default function ScannerPage() {
           />
         </div>
 
-        {/* Mobile detail panel — appears below table when a row is selected */}
+        {/* Mobile/tablet detail panel — appears below table when a row is selected */}
         {selected && (
-          <div ref={mobilePanelRef} className="md:hidden flex flex-col rounded-xl border border-gray-200 bg-white shadow-sm">
+          <div ref={mobilePanelRef} className="lg:hidden flex flex-col rounded-xl border border-gray-200 bg-white shadow-sm">
             <StockDetailsPanel
               row={selected}
               t={tStr}
@@ -162,8 +163,8 @@ export default function ScannerPage() {
 
       </div>
 
-      {/* Desktop right column — always visible, hidden on mobile */}
-      <div className="hidden md:flex md:flex-col md:w-1/2 border-l border-gray-200 bg-white overflow-hidden">
+      {/* Desktop right column — visible only at lg+, hidden on smaller/landscape mobile */}
+      <div className="hidden lg:flex lg:flex-col lg:w-1/2 border-l border-gray-200 bg-white overflow-hidden">
         <StockDetailsPanel row={selected} t={tStr} />
       </div>
 

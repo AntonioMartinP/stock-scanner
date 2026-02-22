@@ -58,8 +58,10 @@ export default function ScannerControls({
           className={selectCls}
         >
           <option value="stooq">{t("sources.stooq")}</option>
-          <option value="alphavantage">{t("sources.alphavantage")}</option>
           <option value="yahoo">{t("sources.yahoo")}</option>
+          <option value="alphavantage" title={t("sources.alphavantageHint")}>
+            {t("sources.alphavantage")} ⚠︎
+          </option>
         </select>
       </div>
 

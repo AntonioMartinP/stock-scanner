@@ -73,7 +73,7 @@ export default function ScannerTable({
   const allCount  = rows.length;
 
   return (
-    <div className="flex flex-col md:h-full">
+    <div className="flex flex-col lg:h-full">
 
       {/* Search + filters — wraps on mobile */}
       <div className="flex flex-wrap items-center gap-2 border-b border-gray-100 px-4 py-3">
@@ -96,8 +96,8 @@ export default function ScannerTable({
           />
         </div>
 
-        {/* Filter buttons */}
-        <div className="flex gap-2">
+        {/* Filter buttons — wraps on very narrow screens */}
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setFilter("all")}
             className={`h-9 rounded-lg px-3 text-sm font-medium transition ${
@@ -131,8 +131,8 @@ export default function ScannerTable({
         </div>
       </div>
 
-      {/* Table — scrollable; on desktop fills remaining space, on mobile auto-expands */}
-      <div className="overflow-auto md:flex-1">
+      {/* Table — scrollable; on desktop fills remaining space, on mobile/tablet auto-expands */}
+      <div className="overflow-auto lg:flex-1">
         <table className="w-full text-sm">
           <thead className="sticky top-0 bg-white z-10 border-b border-gray-100">
             <tr>

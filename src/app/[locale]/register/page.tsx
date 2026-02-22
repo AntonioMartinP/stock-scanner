@@ -94,7 +94,7 @@ export default function RegisterPage() {
               />
             </div>
 
-            {/* Password */}}
+            {/* Password */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 {t('password')}
@@ -115,7 +115,7 @@ export default function RegisterPage() {
               />
             </div>
 
-            {/* Submit */}}
+            {/* Submit */}
             <button
               type="submit"
               disabled={submitting}

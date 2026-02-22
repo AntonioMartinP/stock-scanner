@@ -30,4 +30,15 @@ export class MemoryCache {
   }
 }
 
+/**
+ * Shared cache instance — 6-hour TTL.
+ *
+ * ⚠️  Serverless caveat: in serverless environments (Vercel Functions, AWS Lambda)
+ * each cold-start creates a fresh Node.js module instance, so the cache does NOT
+ * persist across function invocations. The cache still reduces redundant calls
+ * within a single warm instance (e.g. the same Lambda handling multiple requests
+ * before being recycled).
+ *
+ * For persistent cross-instance caching in production use Vercel KV or Redis.
+ */
 export const marketDataCache = new MemoryCache(6 * 60 * 60 * 1000); // 6h

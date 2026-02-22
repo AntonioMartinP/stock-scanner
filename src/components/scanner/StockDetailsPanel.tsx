@@ -25,7 +25,7 @@ export default function StockDetailsPanel({
   const distStyle = getDistanceStyle(row.isNewAth, row.isNearAth);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4 p-4 md:p-6 md:h-full">
+    <div className="flex min-h-0 flex-1 flex-col gap-4 p-4 lg:p-6 lg:h-full">
 
       {/* Header: ticker + name + close button on mobile */}
       <div className="flex items-start justify-between">
@@ -36,7 +36,7 @@ export default function StockDetailsPanel({
         {onClose && (
           <button
             onClick={onClose}
-            className="md:hidden ml-4 flex h-8 w-8 items-center justify-center
+            className="lg:hidden ml-4 flex h-8 w-8 items-center justify-center
                        rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
@@ -77,7 +77,7 @@ export default function StockDetailsPanel({
       </div>
 
       {/* Chart — symbol sanitised before reaching the widget */}
-      <div className="h-[60vh] md:h-auto md:flex-1 rounded-xl border border-gray-200 overflow-hidden">
+      <div className="h-[60vh] lg:h-auto lg:flex-1 rounded-xl border border-gray-200 overflow-hidden">
         <TradingViewWidget symbol={sanitizeSymbol(row.tradingViewSymbol)} />
       </div>
 
