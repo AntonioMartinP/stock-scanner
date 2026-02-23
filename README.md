@@ -29,27 +29,27 @@ Identificar oportunidades técnicas en un mercado con cientos de valores que req
 
 | Capa | Tecnología | Versión |
 |---|---|---|
-| Framework web | Next.js (App Router, SSR) | 16.1.6 |
+| Framework web | Next.js (App Router, SSR) | ^15 |
 | Lenguaje | TypeScript | ^5 |
-| UI | React | 19.2.3 |
+| UI | React | ^19 |
 | Estilos | Tailwind CSS | ^4 |
 | Internacionalización | next-intl | ^4.8.2 |
-| Autenticación | Firebase Auth | ^12.9.0 |
+| Autenticación | Firebase Auth | ^11 |
 | Datos de mercado | yahoo-finance2 | ^3.13.0 |
-| Validación | Zod | ^4.3.6 |
-| Tests | Vitest | ^4.0.18 |
+| Validación | Zod | ^4 |
+| Tests | Vitest | ^2 |
 | Test utilities | Testing Library (React + DOM) | ^16 / ^10 |
-| Linting | ESLint | ^10 |
-| Linting config | eslint-config-next | ^0.2.4 |
+| Linting | ESLint | ^9 |
+| Linting config | eslint-config-next | ^15 |
 | Compilador React | React Compiler (Babel plugin) | 1.0.0 |
 
 ### Proveedores de datos configurables
 
 | `source` | Implementación | Estado |
 |---|---|---|
-| `yahoo` | `yahooProvider.ts` | Activo. Funcionamiento 100% OK |
-| `alphavantage` | `alphaVantageProvider.ts` | Requiere API key de pago. La UI muestra aviso ⚠ y el backend devuelve HTTP 422 sin clave |
-| `stooq` | `stooqProvider.ts` | Activo. Implementación real (CSV). Usa `FallbackProvider` → Yahoo para índices europeos |
+| `yahoo` | `yahooProvider.ts` | ✅ Activo. Funcionamiento 100% OK. Sin límite de peticiones |
+| `alphavantage` | `alphaVantageProvider.ts` | ✅ Activo con API Key **gratuita**. Límite: 25 req/día · 5 req/min. Rate limiting automático integrado. Ver sección [Alpha Vantage](#alpha-vantage--obtener-api-key-gratuita) |
+| `stooq` | `stooqProvider.ts` | ✅ Activo. Implementación real (CSV). Usa `FallbackProvider` → Yahoo para índices europeos |
 
 ---
 
@@ -92,7 +92,8 @@ NEXT_PUBLIC_FIREBASE_APP_ID=tu_app_id
 ALPHA_VANTAGE_API_KEY=tu_clave_alpha_vantage
 ```
 
-> Yahoo Finance no requiere clave de API. Alpha Vantage tiene un límite de 25 peticiones/día en el tier gratuito.
+> **Yahoo Finance** no requiere clave de API y no tiene límite de peticiones — es la fuente recomendada.  
+> **Alpha Vantage** ofrece una clave gratuita con límite de 25 peticiones/día. Ver sección [Alpha Vantage](#alpha-vantage--obtener-api-key-gratuita).
 
 ### 4. Ejecutar en modo desarrollo
 
@@ -124,6 +125,23 @@ npm run lint
 
 ---
 
+## Alpha Vantage — Obtener API Key gratuita
+
+1. Ve a [alphavantage.co/support/#api-key](https://www.alphavantage.co/support/#api-key)
+2. Rellena el formulario (nombre + email)
+3. Recibes la clave **al instante** — sin tarjeta de crédito
+4. Añádela al `.env.local`:
+
+```env
+ALPHA_VANTAGE_API_KEY=tu_clave_aqui
+```
+
+> **Limitaciones del tier gratuito**: 25 peticiones/día · 5 peticiones/minuto.  
+> El proveedor incluye **rate limiting automático** (13 segundos entre llamadas) para mantenerse dentro del límite.  
+> Para índices con muchos valores (DAX 40 = 40 valores, IBEX 35 = 35 valores) se recomienda **Yahoo Finance**, que no tiene límites.
+
+---
+
 ## Estructura del proyecto
 
 ```
@@ -140,7 +158,7 @@ stock-scanner/
 ├── package.json
 ├── docs/
 │   └── diagrams/system.mmd          # Diagrama Mermaid de arquitectura
-├── public/                          # Recursos estáticos (imágenes, etc.)
+├── public/                          # Recursos estáticos (imágenes, favicon, etc.)
 ├── src/
 │   ├── middleware.ts                # Middleware: protección de rutas + i18n (next-intl)
 │   ├── app/                         # App Router de Next.js
@@ -155,8 +173,8 @@ stock-scanner/
 │   │   │       ├── page.tsx         # Vista principal del scanner (protegida)
 │   │   │       └── loading.tsx      # Skeleton de carga mientras se obtienen datos
 │   │   ├── api/
-│   │   │   ├── scanner/route.ts     # GET /api/scanner — ejecuta el análisis
-│   │   │   └── markets/route.ts     # GET /api/markets — devuelve los mercados disponibles
+│   │   │   ├── scanner/route.ts     # GET /api/scanner — ejecuta el análisis (rate limit: 30 req/min por IP)
+│   │   │   └── markets/route.ts     # GET /api/markets — devuelve los mercados disponibles (rate limit: 60 req/min por IP)
 │   │   └── globals.css
 │   │
 │   ├── application/                 # Capa de aplicación (casos de uso + DTOs)
@@ -168,13 +186,13 @@ stock-scanner/
 │   │   └── services/computeAth.ts   # Cálculo de ATH real y ATH 52 semanas
 │   │
 │   ├── infrastructure/              # Adaptadores externos
-│   │   ├── cache/memoryCache.ts     # Caché en memoria para reducir llamadas a APIs
+│   │   ├── cache/memoryCache.ts     # Caché en memoria TTL 6h (⚠ se resetea por instancia en serverless)
 │   │   └── marketData/
 │   │       ├── MarketDataProvider.ts    # Interfaz del proveedor (contrato)
 │   │       ├── providerFactory.ts       # Fábrica: selecciona proveedor por source
 │   │       ├── fallbackProvider.ts      # Proveedor compuesto: primario → secundario
-│   │       ├── yahooProvider.ts         # Proveedor Yahoo Finance
-│   │       ├── alphaVantageProvider.ts  # Proveedor Alpha Vantage
+│   │       ├── yahooProvider.ts         # Proveedor Yahoo Finance (sin límites)
+│   │       ├── alphaVantageProvider.ts  # Proveedor Alpha Vantage (gratuito, 25 req/día, rate limiting interno)
 │   │       ├── stooqProvider.ts         # Proveedor Stooq (CSV real)
 │   │       ├── mockProvider.ts          # Proveedor mock para desarrollo y tests
 │   │       ├── errors.ts                # Errores tipados (ProviderRateLimitError, etc.)
@@ -249,8 +267,10 @@ stock-scanner/
 | Seguridad defensiva | Símbolos saneados con regex antes de pasarlos al widget externo de TradingView |
 | Defensa en profundidad | Seguridad en capas: validación Zod + `sanitizeSymbol` + cabeceras HTTP CSP/HSTS/X-Frame |
 | Tolerancia a fallos | `runScanner` usa `Promise.all` con `try/catch` por valor; un error no interrumpe el resto |
-| Rate limiting | `rateLimit.ts` limita peticiones por IP en `/api/scanner` (30/min) y `/api/markets` (60/min) |
-| Caché | `MemoryCache` con TTL 6h reduce llamadas a proveedores externos; en serverless resetea por instancia |
+| Rate limiting | `rateLimit.ts` (token bucket por IP): 30 req/min en `/api/scanner`, 60 req/min en `/api/markets` |
+| Caché | `MemoryCache` TTL 6h reduce llamadas a APIs externas. ⚠ En entornos serverless (Vercel) la caché se resetea por instancia — comportamiento documentado |
+| Error boundaries | `error.tsx` captura errores de runtime en toda la app; `not-found.tsx` cubre rutas inexistentes |
+| Loading states | `scanner/loading.tsx` activa el Suspense boundary nativo de Next.js con skeleton animado |
 
 ---
 
@@ -295,8 +315,10 @@ Al seleccionar una fila de la tabla, se abre un panel lateral con:
 ### 5. Múltiples proveedores de datos con caché
 
 - Patrón **Factory** para seleccionar el proveedor en tiempo de ejecución.
-- Caché en memoria para evitar llamadas redundantes a APIs externas.
-- Errores de rate-limit devueltos al cliente como HTTP 429 con información del proveedor afectado.
+- Caché en memoria con TTL 6h para evitar llamadas redundantes a APIs externas.
+- Rate limiting propio por IP antes de llegar al proveedor externo.
+- Errores de rate-limit devueltos al cliente como **HTTP 429** con cabeceras `Retry-After` y `X-RateLimit-*`.
+- Alpha Vantage incluye rate limiting automático interno (13 s entre llamadas) para respetar el límite de 5 req/min del tier gratuito.
 
 ### 6. Seguridad de inputs y cabeceras HTTP
 
@@ -327,6 +349,14 @@ La CSP está ajustada a los dominios exactos requeridos: `s3.tradingview.com` pa
 | `source` | No | `yahoo`, `alphavantage`, `stooq` | `yahoo` |
 | `mode` | No | `ath_real`, `ath_52w` | `ath_52w` |
 
+**Cabeceras de respuesta en caso de rate limit:**
+
+| Cabecera | Descripción |
+|---|---|
+| `X-RateLimit-Limit` | Máximo de peticiones permitidas por ventana |
+| `X-RateLimit-Remaining` | Peticiones restantes en la ventana actual |
+| `Retry-After` | Segundos hasta que se renueva el límite |
+
 **Respuesta de ejemplo:**
 
 ```json
@@ -344,6 +374,15 @@ La CSP está ajustada a los dominios exactos requeridos: `s3.tradingview.com` pa
       "lastUpdate": "2026-02-19T16:30:00.000Z"
     }
   ]
+}
+```
+
+**Respuesta de error — Alpha Vantage límite diario:**
+
+```json
+{
+  "error": "alpha_vantage_daily_limit",
+  "message": "Alpha Vantage daily limit reached (25 req/day). Try tomorrow."
 }
 ```
 
@@ -379,6 +418,8 @@ La suite sigue una **pirámide de tres niveles**: funciones puras primero (mayor
 | Cobertura — `lib/` | ~100% |
 | Cobertura — `domain/` | ~100% |
 
+> Ejecuta `npm test` para obtener las métricas actuales exactas.
+
 ### Decisiones de testing
 
 - `sanitizeSymbol` cubre **4 grupos de casos** porque es la frontera de seguridad antes del widget externo de TradingView:
@@ -411,7 +452,7 @@ npx vitest
 | `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` | cliente + servidor | Bucket de Storage |
 | `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | cliente + servidor | Sender ID de FCM |
 | `NEXT_PUBLIC_FIREBASE_APP_ID` | cliente + servidor | App ID de Firebase |
-| `ALPHA_VANTAGE_API_KEY` | solo servidor | Clave de Alpha Vantage |
+| `ALPHA_VANTAGE_API_KEY` | solo servidor | Clave gratuita de Alpha Vantage (25 req/día). Ver [sección dedicada](#alpha-vantage--obtener-api-key-gratuita) |
 
 ---
 
@@ -429,8 +470,9 @@ Steps: npm ci → npm run lint → npm run test → npm run build
 
 La aplicación está desplegada en **Vercel** con integración continua desde la rama `master`.
 
-- Las variables de entorno de Firebase se configuran en el dashboard de Vercel.
+- Las variables de entorno de Firebase y Alpha Vantage se configuran en el dashboard de Vercel.
 - El deploy se activa automáticamente en cada push a `master`.
+- La caché en memoria (`MemoryCache`) se resetea entre instancias serverless — comportamiento esperado y documentado.
 
 ---
 
