@@ -5,7 +5,8 @@ import { daxToYahooSymbol } from "./mappings/daxMappings";
 import { ftse_mib40ToYahooSymbol } from "./mappings/ftse_mibMappings";
 import YahooFinance from "yahoo-finance2";
 
-const yahooFinance = new YahooFinance();
+// Suppress the deprecation notice for historical() → chart() redirect (v3 behaviour)
+const yahooFinance = new YahooFinance({ suppressNotices: ["ripHistorical"] });
 
 export const yahooProvider: MarketDataProvider = {
   id: "yahoo",
@@ -50,14 +51,22 @@ export const yahooProvider: MarketDataProvider = {
 
       console.log(`✓ Received ${result.length} bars for ${symbol}`);
 
-      const candles: Candle[] = result.map(bar => ({
-        date: bar.date.toISOString().split("T")[0],
-        open: bar.open,
-        high: bar.high,
-        low: bar.low,
-        close: bar.close,
-        volume: bar.volume
-      }));
+      const candles: Candle[] = result
+        // Defensively filter out bars with missing OHLC fields (can happen on split
+        // days, IPO day, or when Yahoo returns a partial intraday bar mid-session)
+        .filter(bar =>
+          bar.high != null && bar.open != null &&
+          bar.low != null && bar.close != null &&
+          bar.high > 0 && bar.close > 0
+        )
+        .map(bar => ({
+          date: bar.date.toISOString().split("T")[0],
+          open: bar.open,
+          high: bar.high,
+          low: bar.low,
+          close: bar.close,
+          volume: bar.volume
+        }));
 
       marketDataCache.set(cacheKey, candles);
       return candles;

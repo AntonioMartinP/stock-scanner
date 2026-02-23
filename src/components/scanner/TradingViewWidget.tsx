@@ -47,7 +47,7 @@ export default function TradingViewWidget({ symbol }: { symbol: string }) {
         autosize: true,
         symbol: symbol,
         interval: 'D',
-        timezone: 'Europe/Madrid',
+        timezone: 'exchange',
         theme: 'light',
         style: '0',
         locale,

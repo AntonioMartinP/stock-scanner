@@ -44,6 +44,18 @@ export function computeAth(
   const previousAth = ath;
   const currentHigh = lastCandle.high;
 
+  // Guard against division by zero (e.g. empty history or all-zero highs)
+  if (previousAth <= 0 || currentHigh <= 0) {
+    return {
+      ath: 0,
+      previousAth: 0,
+      currentHigh: 0,
+      distancePct: 0,
+      isNewAth: false,
+      isNearAth: false
+    };
+  }
+
   const isNewAth = currentHigh > previousAth;
   const distancePct = ((previousAth - currentHigh) / previousAth) * 100;
 
